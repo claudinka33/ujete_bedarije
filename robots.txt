@@ -1,0 +1,8 @@
+# robots.txt za Ujete Bedarije
+# Dovoljujemo dostop vsem iskalnikom
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.ujetebedarije.si/sitemap.xml
