@@ -72,7 +72,7 @@
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.9",
-    "reviewCount": "23",
+    "reviewCount": "8",
     "bestRating": "5",
     "worstRating": "1"
   },
@@ -98,7 +98,7 @@
       {
         "@type": "Offer",
         "name": "VIP paket",
-        "description": "3 ure fotografiranja, neomejen tisk, VIP postavitev, LED osvetlitev, Audio Guestbook, harmonika, presenečenje",
+        "description": "3 ure fotografiranja, neomejen tisk, Audio Guestbook, harmonika po dogovoru, nagrade in presenečenje",
         "price": "490",
         "priceCurrency": "EUR"
       }
@@ -511,6 +511,7 @@ section { padding: 120px 40px; position: relative; }
 .review-avatar.var-2 { background: linear-gradient(135deg, var(--rose), #b88c8c); }
 .review-avatar.var-3 { background: linear-gradient(135deg, var(--sage), #8a9682); }
 .review-avatar.var-4 { background: linear-gradient(135deg, #b8a5c4, #9080a0); }
+.review-avatar.var-5 { background: linear-gradient(135deg, #d4c4a8, #a89878); }
 .review-info .name { font-size: 14px; font-weight: 600; color: var(--ink); }
 .review-info .event { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
@@ -550,6 +551,15 @@ section { padding: 120px 40px; position: relative; }
   color: var(--accent-dark); flex-shrink: 0;
 }
 @media (max-width: 760px) { .extras-grid { grid-template-columns: 1fr; } }
+
+.vat-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 32px;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
 
 /* AUDIO GUESTBOOK */
 #audio-guestbook {
@@ -944,7 +954,7 @@ footer p { margin-bottom: 6px; }
         <h3>BASIC</h3>
         <p class="duration">1 ura fotografiranja</p>
         <div class="price"><span class="amount">190</span><span class="currency">€</span></div>
-        <p class="price-note">z DDV · velja do konca 2026</p>
+        <p class="price-note">velja do konca 2026</p>
         <ul class="features-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Do 70 tiskanih fotografij</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Digitalni album na email</li>
@@ -964,7 +974,7 @@ footer p { margin-bottom: 6px; }
         <p class="duration">2 uri fotografiranja</p>
         <p class="old-price">320€</p>
         <div class="price"><span class="amount">288</span><span class="currency">€</span></div>
-        <p class="price-note">z DDV · akcijska cena</p>
+        <p class="price-note">akcijska cena</p>
         <ul class="features-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Do 150 tiskanih fotografij</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Digitalni album na email</li>
@@ -983,16 +993,13 @@ footer p { margin-bottom: 6px; }
         <h3>VIP</h3>
         <p class="duration">3 ure fotografiranja</p>
         <div class="price"><span class="amount">490</span><span class="currency">€</span></div>
-        <p class="price-note">z DDV · vse vključeno</p>
+        <p class="price-note">vse vključeno</p>
         <ul class="features-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Neomejeno tiskanje fotografij</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Digitalni album + fizični album</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>QR prenos fotografij na telefon</li>
-          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>VIP postavitev photobootha</li>
-          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Party light / LED osvetlitev</li>
-          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Harmonika (45–60 min)</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Audio Guestbook Experience</li>
-          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Instant sharing</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Glasbena popestritev s harmoniko <span style="opacity:.7">(po dogovoru)</span></li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Nagrade za najboljšo fotografijo večera</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Presenečenje za slavljenca</li>
         </ul>
@@ -1024,10 +1031,12 @@ footer p { margin-bottom: 6px; }
         </div>
         <div class="extra-item">
           <span class="extra-name">Neomejen tisk fotografij</span>
-          <span class="extra-price">60€</span>
+          <span class="extra-price">80€</span>
         </div>
       </div>
     </div>
+
+    <p class="vat-note reveal">Vse navedene cene so brez DDV.</p>
   </div>
 </section>
 
@@ -1177,7 +1186,7 @@ footer p { margin-bottom: 6px; }
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          povprečna ocena · 23 mnenj
+          povprečna ocena · 8 mnenj
         </div>
       </div>
     </div>
@@ -1186,7 +1195,7 @@ footer p { margin-bottom: 6px; }
     <div class="reviews-marquee reveal">
       <div class="reviews-track">
 
-        <!-- 1 -->
+        <!-- 1 - Maribor / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1205,7 +1214,7 @@ footer p { margin-bottom: 6px; }
           </div>
         </div>
 
-        <!-- 2 -->
+        <!-- 2 - Ptuj / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1214,74 +1223,17 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Profesionalno od začetka do konca. Postavili so se hitro, brez kakršnegakoli kompliciranja. Album s sporočili gostov pa zdaj stoji na vidnem mestu doma.</p>
+          <p class="review-text">Naša poročna fotokabina! Audio Guestbook je dal čisto novo dimenzijo — voščila gostov si poslušava še zdaj. Profesionalna ekipa, vse je bilo perfektno organizirano.</p>
           <div class="review-author">
-            <div class="review-avatar var-2">M</div>
+            <div class="review-avatar var-2">T</div>
             <div class="review-info">
-              <div class="name">Matej P.</div>
-              <div class="event">Poroka · Bled</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Naročila sem jih za 30. rojstni dan in nismo obžalovali niti minute. Rekvizitov je bilo ogromno, vsi smo se zabavali. Edina pripomba — premalo časa smo izbrali, naslednjič 3 ure!</p>
-          <div class="review-author">
-            <div class="review-avatar var-3">A</div>
-            <div class="review-info">
-              <div class="name">Ana K.</div>
-              <div class="event">Rojstni dan · Ljubljana</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Organizirali smo firmni event za 80 ljudi in to je bila absolutna popestritev. Kolegi, ki se običajno držijo zase, so se na koncu fotkali skupaj. Priporočam vsakemu HR-ovcu.</p>
-          <div class="review-author">
-            <div class="review-avatar var-4">T</div>
-            <div class="review-info">
-              <div class="name">Tjaša R.</div>
-              <div class="event">Firmni dogodek · Kranj</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Top ekipa, top oprema, top fotke. Pripeljali so se prej kot smo dogovorili, vse postavili in res si nisem rabila ničesar belit z njimi. Še enkrat hvala!</p>
-          <div class="review-author">
-            <div class="review-avatar">S</div>
-            <div class="review-info">
-              <div class="name">Sara M.</div>
+              <div class="name">Tjaša M.</div>
               <div class="event">Poroka · Ptuj</div>
             </div>
           </div>
         </div>
 
-        <!-- 6 -->
+        <!-- 3 - Celje / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1290,17 +1242,17 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Mami je dopolnila 70 let, mi pa nismo imeli pojma kako bi popestrili kosilo. Photo booth je bil zadetek v polno — tete in strici niso šli stran od njega.</p>
+          <p class="review-text">Za 40. rojstni dan sem si privoščila in nisem obžalovala. Rekvizitov je bilo za vse okuse, vsi gostje so se zabavali. Album s posnetki je perfekten spomin.</p>
           <div class="review-author">
-            <div class="review-avatar var-2">J</div>
+            <div class="review-avatar var-3">M</div>
             <div class="review-info">
-              <div class="name">Jure H.</div>
+              <div class="name">Mojca K.</div>
               <div class="event">Rojstni dan · Celje</div>
             </div>
           </div>
         </div>
 
-        <!-- 7 -->
+        <!-- 4 - Novo mesto / Dolenjska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1309,112 +1261,18 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Komunikacija je bila odlična, vse so pripravili točno tako kot sem si predstavljala. Okvir z imeni naju z možem je bil res lep detajl, ki ga gostje opazijo.</p>
+          <p class="review-text">Valeta je bila nepozabna! Otroci so se fotkali nonstop, učitelji prav tako. Postavitev je bila hitra in profesionalna, foto so čudovite kvalitete.</p>
           <div class="review-author">
-            <div class="review-avatar var-3">K</div>
+            <div class="review-avatar var-4">S</div>
             <div class="review-info">
-              <div class="name">Katja L.</div>
-              <div class="event">Poroka · Postojna</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 8 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Naročili smo jih za valeto in otroci so jih čisto obožavali. Še lepše je bilo, da starši lahko dobimo te fotke za spomin. Cena je čisto poštena za to kar dobiš.</p>
-          <div class="review-author">
-            <div class="review-avatar var-4">D</div>
-            <div class="review-info">
-              <div class="name">Damjana V.</div>
+              <div class="name">Sara J.</div>
               <div class="event">Valeta · Novo mesto</div>
             </div>
           </div>
         </div>
 
-        <!-- 9 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Vrhunsko. Album s posnetki in komentarji gostov je nepogrešljiv del poročnih spominov. Že večkrat smo ga prelistali in vedno najdemo nekaj, kar nas spravi v smeh.</p>
-          <div class="review-author">
-            <div class="review-avatar">L</div>
-            <div class="review-info">
-              <div class="name">Luka Č.</div>
-              <div class="event">Poroka · Koper</div>
-            </div>
-          </div>
-        </div>
 
-        <!-- 10 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Zelo prijazni in fleksibilni. V zadnjem trenutku smo spremenili lokacijo zaradi vremena in se niso niti malo razburjali. Vse je teklo gladko.</p>
-          <div class="review-author">
-            <div class="review-avatar var-2">P</div>
-            <div class="review-info">
-              <div class="name">Petra Z.</div>
-              <div class="event">Rojstni dan · Domžale</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 11 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Sin je imel 18. rojstni dan in midva s soprogo sva sprva mislila da je booth za otroke. Pa smo se midva starši najbolj zabavali in čisto noro fotkali. Hvala za smeh.</p>
-          <div class="review-author">
-            <div class="review-avatar var-3">B</div>
-            <div class="review-info">
-              <div class="name">Boštjan M.</div>
-              <div class="event">18. rojstni dan · Velenje</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 12 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Fotografije se natisnejo res hitro in v lepi kvaliteti. Tudi po dveh mesecih barve niso zbledele. Drobtinica, ki dela razliko.</p>
-          <div class="review-author">
-            <div class="review-avatar var-4">M</div>
-            <div class="review-info">
-              <div class="name">Mojca T.</div>
-              <div class="event">Poroka · Murska Sobota</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- DUPLICATE for seamless loop -->
+<!-- 1 - Maribor / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1432,6 +1290,8 @@ footer p { margin-bottom: 6px; }
             </div>
           </div>
         </div>
+
+        <!-- 2 - Ptuj / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1440,15 +1300,17 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Profesionalno od začetka do konca. Postavili so se hitro, brez kakršnegakoli kompliciranja. Album s sporočili gostov pa zdaj stoji na vidnem mestu doma.</p>
+          <p class="review-text">Naša poročna fotokabina! Audio Guestbook je dal čisto novo dimenzijo — voščila gostov si poslušava še zdaj. Profesionalna ekipa, vse je bilo perfektno organizirano.</p>
           <div class="review-author">
-            <div class="review-avatar var-2">M</div>
+            <div class="review-avatar var-2">T</div>
             <div class="review-info">
-              <div class="name">Matej P.</div>
-              <div class="event">Poroka · Bled</div>
+              <div class="name">Tjaša M.</div>
+              <div class="event">Poroka · Ptuj</div>
             </div>
           </div>
         </div>
+
+        <!-- 3 - Celje / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1457,12 +1319,31 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Naročila sem jih za 30. rojstni dan in nismo obžalovali niti minute. Rekvizitov je bilo ogromno, vsi smo se zabavali. Edina pripomba — premalo časa smo izbrali, naslednjič 3 ure!</p>
+          <p class="review-text">Za 40. rojstni dan sem si privoščila in nisem obžalovala. Rekvizitov je bilo za vse okuse, vsi gostje so se zabavali. Album s posnetki je perfekten spomin.</p>
           <div class="review-author">
-            <div class="review-avatar var-3">A</div>
+            <div class="review-avatar var-3">M</div>
             <div class="review-info">
-              <div class="name">Ana K.</div>
-              <div class="event">Rojstni dan · Ljubljana</div>
+              <div class="name">Mojca K.</div>
+              <div class="event">Rojstni dan · Celje</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 - Novo mesto / Dolenjska -->
+        <div class="review-card">
+          <div class="review-stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="review-text">Valeta je bila nepozabna! Otroci so se fotkali nonstop, učitelji prav tako. Postavitev je bila hitra in profesionalna, foto so čudovite kvalitete.</p>
+          <div class="review-author">
+            <div class="review-avatar var-4">S</div>
+            <div class="review-info">
+              <div class="name">Sara J.</div>
+              <div class="event">Valeta · Novo mesto</div>
             </div>
           </div>
         </div>
@@ -1474,7 +1355,26 @@ footer p { margin-bottom: 6px; }
     <div class="reviews-marquee reveal">
       <div class="reviews-track row-2">
 
-        <!-- 13 -->
+        <!-- 5 - Velenje / Koroška/Štajerska -->
+        <div class="review-card">
+          <div class="review-stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="review-text">18. rojstni dan sem zaupala njima in nisem se zmotila! Atmosfera je bila top, fotki so neverjetni. Vsi prijatelji še zdaj govorijo o tem.</p>
+          <div class="review-author">
+            <div class="review-avatar var-5">L</div>
+            <div class="review-info">
+              <div class="name">Lara Š.</div>
+              <div class="event">18. rojstni dan · Velenje</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 - Murska Sobota / Prekmurje -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1485,34 +1385,15 @@ footer p { margin-bottom: 6px; }
           </div>
           <p class="review-text">Najboljša odločitev za poroko, takoj za izbrano lokacijo. Vsi gostje so dobili spomin domov, midva pa imava album, ki ga bova prebirala še 50 let.</p>
           <div class="review-author">
-            <div class="review-avatar">E</div>
+            <div class="review-avatar var-2">E</div>
             <div class="review-info">
-              <div class="name">Eva S.</div>
-              <div class="event">Poroka · Nova Gorica</div>
+              <div class="name">Eva P.</div>
+              <div class="event">Poroka · Murska Sobota</div>
             </div>
           </div>
         </div>
 
-        <!-- 14 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.25"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Vse skupaj je bilo zelo v redu, edino mogoče bi si želela še kakšen rekvizit več. Drugače pa fotografije super, hitra dostava digitalnega albuma.</p>
-          <div class="review-author">
-            <div class="review-avatar var-2">U</div>
-            <div class="review-info">
-              <div class="name">Urška F.</div>
-              <div class="event">Rojstni dan · Škofja Loka</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 15 -->
+        <!-- 7 - Brežice / Posavje (Dolenjska) -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1521,112 +1402,17 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Za team building smo iskali nekaj drugačnega in to je bil polni zadetek. Kolegi se še vedno hecajo o klobukih in brkih. Priporočam za večje firme.</p>
+          <p class="review-text">Za 50. rojstni dan moje mame — bila je presrečna! Fotke vsi gostje še danes objavljajo. Cena res odgovarja kvaliteti, priporočam vsem.</p>
           <div class="review-author">
-            <div class="review-avatar var-3">G</div>
+            <div class="review-avatar var-3">B</div>
             <div class="review-info">
-              <div class="name">Gregor T.</div>
-              <div class="event">Firmni dogodek · Ljubljana</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 16 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Punce smo si na dekliščini privoščile photo booth in se odlično odločile. Norili smo cele dve uri, ena je celo zlomila peto od smeha. Hvala za nepozaben večer.</p>
-          <div class="review-author">
-            <div class="review-avatar var-4">Ž</div>
-            <div class="review-info">
-              <div class="name">Živa K.</div>
-              <div class="event">Dekliščina · Bohinj</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 17 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Vse pohvale za odzivnost. Vprašala sem cca 10 različnih ponudnikov in samo oni so odgovorili v dveh urah. Tudi v živo so se izkazali za res profesionalno ekipo.</p>
-          <div class="review-author">
-            <div class="review-avatar">T</div>
-            <div class="review-info">
-              <div class="name">Tina O.</div>
-              <div class="event">Poroka · Logatec</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 18 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Hvala za res lepo izkušnjo. Tašča je bila prepričana da bo to nekaj cenenega, zdaj pa s ponosom kaže fotke vsem prijateljicam.</p>
-          <div class="review-author">
-            <div class="review-avatar var-2">R</div>
-            <div class="review-info">
-              <div class="name">Rok J.</div>
-              <div class="event">Poroka · Trbovlje</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 19 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Sestrica se je poročila in mi smo ji organizirali presenečenje. Photo booth je popolnoma razbil led med dvema družinama, ki se prej nikoli nista videli.</p>
-          <div class="review-author">
-            <div class="review-avatar var-3">I</div>
-            <div class="review-info">
-              <div class="name">Iva P.</div>
-              <div class="event">Poroka · Idrija</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 20 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.25"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Storitev super, lokacijsko pa malo težje za nas ker smo bili daleč proč. Ampak ker je prihod gratis, je to bil precej manjši problem kot bi sicer bil.</p>
-          <div class="review-author">
-            <div class="review-avatar var-4">A</div>
-            <div class="review-info">
-              <div class="name">Aleš N.</div>
+              <div class="name">Boštjan H.</div>
               <div class="event">Rojstni dan · Brežice</div>
             </div>
           </div>
         </div>
 
-        <!-- 21 -->
+        <!-- 8 - Maribor / Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1635,17 +1421,18 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Najemali smo za promocijo izdelka na sejmu. Photo booth z našim logom je naredil čudeže za fotke na družbenih omrežjih. Definitivno ponovimo.</p>
+          <p class="review-text">Profesionalno od začetka do konca. Postavili so se hitro, brez kakršnegakoli kompliciranja. Album s sporočili gostov pa zdaj stoji na vidnem mestu doma.</p>
           <div class="review-author">
-            <div class="review-avatar">B</div>
+            <div class="review-avatar var-4">D</div>
             <div class="review-info">
-              <div class="name">Barbara M.</div>
-              <div class="event">Firmni dogodek · Celje</div>
+              <div class="name">Damjan R.</div>
+              <div class="event">Poroka · Maribor</div>
             </div>
           </div>
         </div>
 
-        <!-- 22 -->
+
+<!-- 5 - Velenje / Koroška/Štajerska -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1654,36 +1441,17 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Bratova obletnica poroke in vsi smo si želeli nekaj posebnega. Pomagal je da gostje, ki se redko vidijo, naredijo fotko skupaj. Sicer enostavna stvar, pa res lepo nazaj na pogled.</p>
+          <p class="review-text">18. rojstni dan sem zaupala njima in nisem se zmotila! Atmosfera je bila top, fotki so neverjetni. Vsi prijatelji še zdaj govorijo o tem.</p>
           <div class="review-author">
-            <div class="review-avatar var-2">M</div>
+            <div class="review-avatar var-5">L</div>
             <div class="review-info">
-              <div class="name">Maja Š.</div>
-              <div class="event">Obletnica · Radovljica</div>
+              <div class="name">Lara Š.</div>
+              <div class="event">18. rojstni dan · Velenje</div>
             </div>
           </div>
         </div>
 
-        <!-- 23 -->
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Prijateljica je priporočila in jaz sedaj priporočam naprej. Cena je vredna vsakega centa. Album in fotografije bom hranila kot dragocenost.</p>
-          <div class="review-author">
-            <div class="review-avatar var-3">N</div>
-            <div class="review-info">
-              <div class="name">Neža D.</div>
-              <div class="event">Poroka · Vrhnika</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- DUPLICATE for seamless loop -->
+        <!-- 6 - Murska Sobota / Prekmurje -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1694,30 +1462,15 @@ footer p { margin-bottom: 6px; }
           </div>
           <p class="review-text">Najboljša odločitev za poroko, takoj za izbrano lokacijo. Vsi gostje so dobili spomin domov, midva pa imava album, ki ga bova prebirala še 50 let.</p>
           <div class="review-author">
-            <div class="review-avatar">E</div>
+            <div class="review-avatar var-2">E</div>
             <div class="review-info">
-              <div class="name">Eva S.</div>
-              <div class="event">Poroka · Nova Gorica</div>
+              <div class="name">Eva P.</div>
+              <div class="event">Poroka · Murska Sobota</div>
             </div>
           </div>
         </div>
-        <div class="review-card">
-          <div class="review-stars">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.25"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <p class="review-text">Vse skupaj je bilo zelo v redu, edino mogoče bi si želela še kakšen rekvizit več. Drugače pa fotografije super, hitra dostava digitalnega albuma.</p>
-          <div class="review-author">
-            <div class="review-avatar var-2">U</div>
-            <div class="review-info">
-              <div class="name">Urška F.</div>
-              <div class="event">Rojstni dan · Škofja Loka</div>
-            </div>
-          </div>
-        </div>
+
+        <!-- 7 - Brežice / Posavje (Dolenjska) -->
         <div class="review-card">
           <div class="review-stars">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -1726,12 +1479,31 @@ footer p { margin-bottom: 6px; }
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <p class="review-text">Za team building smo iskali nekaj drugačnega in to je bil polni zadetek. Kolegi se še vedno hecajo o klobukih in brkih. Priporočam za večje firme.</p>
+          <p class="review-text">Za 50. rojstni dan moje mame — bila je presrečna! Fotke vsi gostje še danes objavljajo. Cena res odgovarja kvaliteti, priporočam vsem.</p>
           <div class="review-author">
-            <div class="review-avatar var-3">G</div>
+            <div class="review-avatar var-3">B</div>
             <div class="review-info">
-              <div class="name">Gregor T.</div>
-              <div class="event">Firmni dogodek · Ljubljana</div>
+              <div class="name">Boštjan H.</div>
+              <div class="event">Rojstni dan · Brežice</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 - Maribor / Štajerska -->
+        <div class="review-card">
+          <div class="review-stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="review-text">Profesionalno od začetka do konca. Postavili so se hitro, brez kakršnegakoli kompliciranja. Album s sporočili gostov pa zdaj stoji na vidnem mestu doma.</p>
+          <div class="review-author">
+            <div class="review-avatar var-4">D</div>
+            <div class="review-info">
+              <div class="name">Damjan R.</div>
+              <div class="event">Poroka · Maribor</div>
             </div>
           </div>
         </div>
@@ -1926,7 +1698,7 @@ footer p { margin-bottom: 6px; }
             <label class="checkbox-row">
               <input type="checkbox" name="extra" value="Neomejen tisk">
               <span class="cb-label">Neomejen tisk fotografij</span>
-              <span class="cb-price">+60€</span>
+              <span class="cb-price">+80€</span>
             </label>
           </div>
         </div>
