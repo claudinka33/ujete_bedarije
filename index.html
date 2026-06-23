@@ -91,7 +91,7 @@
         "@type": "Offer",
         "name": "PARTY paket",
         "description": "2 uri fotografiranja, do 150 tiskanih fotografij, QR prenos, harmonika 30-45 min, vse iz BASIC paketa",
-        "price": "288",
+        "price": "280",
         "priceCurrency": "EUR",
         "priceValidUntil": "2026-09-30"
       },
@@ -99,7 +99,7 @@
         "@type": "Offer",
         "name": "VIP paket",
         "description": "3 ure fotografiranja, neomejen tisk, Audio Guestbook, harmonika po dogovoru, nagrade in presenečenje",
-        "price": "490",
+        "price": "350",
         "priceCurrency": "EUR"
       }
     ]
@@ -331,6 +331,11 @@ section { padding: 120px 40px; position: relative; }
   font-weight: 600; font-size: 11px;
   text-transform: uppercase; letter-spacing: 0.06em;
   box-shadow: 0 4px 12px rgba(212, 87, 74, 0.3);
+}
+.price-card .sale-badge.sale-badge-basic {
+  background: var(--accent);
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(201, 169, 110, 0.25);
 }
 .price-card h3 { font-size: 22px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; }
 .price-card .duration { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
@@ -951,10 +956,12 @@ footer p { margin-bottom: 6px; }
 
       <!-- BASIC -->
       <div class="price-card reveal">
+        <div class="sale-badge sale-badge-basic">Akcija −10%</div>
         <h3>BASIC</h3>
         <p class="duration">1 ura fotografiranja</p>
+        <p class="old-price">210€</p>
         <div class="price"><span class="amount">190</span><span class="currency">€</span></div>
-        <p class="price-note">velja do konca 2026</p>
+        <p class="price-note">akcijska cena</p>
         <ul class="features-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Do 70 tiskanih fotografij</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Digitalni album na email</li>
@@ -968,12 +975,12 @@ footer p { margin-bottom: 6px; }
 
       <!-- PARTY - featured with sale -->
       <div class="price-card featured reveal">
-        <div class="sale-badge">Akcija −10% do 30.9.2026</div>
+        <div class="sale-badge">Akcija −13% do 30.9.2026</div>
         <div class="ribbon">Priporočamo</div>
         <h3>PARTY</h3>
         <p class="duration">2 uri fotografiranja</p>
         <p class="old-price">320€</p>
-        <div class="price"><span class="amount">288</span><span class="currency">€</span></div>
+        <div class="price"><span class="amount">280</span><span class="currency">€</span></div>
         <p class="price-note">akcijska cena</p>
         <ul class="features-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Do 150 tiskanih fotografij</li>
@@ -990,10 +997,12 @@ footer p { margin-bottom: 6px; }
 
       <!-- VIP -->
       <div class="price-card reveal">
+        <div class="sale-badge sale-badge-basic">Akcija −15%</div>
         <h3>VIP</h3>
         <p class="duration">3 ure fotografiranja</p>
-        <div class="price"><span class="amount">490</span><span class="currency">€</span></div>
-        <p class="price-note">vse vključeno</p>
+        <p class="old-price">410€</p>
+        <div class="price"><span class="amount">350</span><span class="currency">€</span></div>
+        <p class="price-note">akcijska cena</p>
         <ul class="features-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Neomejeno tiskanje fotografij</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>Digitalni album + fizični album</li>
@@ -1677,8 +1686,8 @@ footer p { margin-bottom: 6px; }
           <select id="paket" name="paket" required>
             <option value="">— Izberi paket —</option>
             <option value="BASIC (190€ · 1h)">BASIC — 190€ (1 ura)</option>
-            <option value="PARTY (288€ · 2h · akcija)">PARTY — 288€ (2 uri, akcijska cena)</option>
-            <option value="VIP (490€ · 3h)">VIP — 490€ (3 ure)</option>
+            <option value="PARTY (280€ · 2h · akcija)">PARTY — 280€ (2 uri, akcijska cena)</option>
+            <option value="VIP (350€ · 3h)">VIP — 350€ (3 ure)</option>
           </select>
         </div>
 
