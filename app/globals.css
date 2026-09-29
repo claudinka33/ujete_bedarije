@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================
+   DESIGN TOKENS (Ujete Bedarije)
+   Poppins font · Off-white bg · Soft gold accent · Sage/Rose gradients
+   ============================================================= */
+:root {
+  --bg: #faf8f5;
+  --surface: #ffffff;
+  --ink: #1a1d24;
+  --ink-soft: #4a4f5c;
+  --muted: #8a8f99;
+  --line: #e8e6e1;
+  --accent: #c9a96e;
+  --accent-dark: #a8895a;
+  --rose: #d4a5a5;
+  --sage: #a8b5a0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+/* Reusable utility classes */
+@layer components {
+  .container-page {
+    @apply max-w-6xl mx-auto px-6 md:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
+           bg-ink text-bg font-semibold text-sm
+           hover:opacity-90 transition-opacity;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
+           bg-transparent border border-line text-ink font-semibold text-sm
+           hover:border-accent transition-colors;
+  }
+
+  .eyebrow {
+    @apply inline-block text-xs font-semibold uppercase tracking-widest
+           text-accent-dark;
+  }
+}
