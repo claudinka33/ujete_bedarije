@@ -1,7 +1,7 @@
 import { getReservation } from '@/lib/queries';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, User, Calendar, Package, Sparkles, MessageCircle } from 'lucide-react';
+import { ArrowLeft, User, Calendar, Package, Sparkles, MessageCircle, type LucideIcon } from 'lucide-react';
 import StatusPill from '@/components/admin/StatusPill';
 import ReservationActions from './ReservationActions';
 
@@ -149,7 +149,7 @@ function Section({
   children,
 }: {
   title: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   className?: string;
   children: React.ReactNode;
 }) {

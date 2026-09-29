@@ -1,6 +1,6 @@
 import { sql } from '@/lib/db';
 import Link from 'next/link';
-import { Calendar, CheckCircle2, XCircle, Clock, TrendingUp } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, Clock, TrendingUp, type LucideIcon } from 'lucide-react';
 import StatusPill from '@/components/admin/StatusPill';
 
 export const dynamic = 'force-dynamic';
@@ -174,7 +174,7 @@ function StatCard({
 }: {
   label: string;
   value: number;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   color: 'amber' | 'green' | 'red' | 'accent';
   href?: string;
 }) {
