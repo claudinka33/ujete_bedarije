@@ -255,3 +255,130 @@ export async function updateReservationStatus(
   `;
   return rows[0] as Reservation;
 }
+
+// =============================================================
+// ADMIN: PACKAGES CRUD
+// =============================================================
+
+export interface PackageInput {
+  slug: string;
+  name: string;
+  duration_hours: number;
+  duration_label: string;
+  price: number;
+  old_price: number | null;
+  sale_badge: string | null;
+  price_note: string | null;
+  featured: boolean;
+  ribbon: string | null;
+  features: Array<{ text: string }>;
+  sort_order: number;
+  published: boolean;
+}
+
+export async function getPackage(id: number): Promise<Package | null> {
+  const rows = await sql`SELECT * FROM packages WHERE id = ${id}`;
+  return (rows[0] as Package) || null;
+}
+
+export async function createPackage(input: PackageInput): Promise<Package> {
+  const rows = await sql`
+    INSERT INTO packages (
+      slug, name, duration_hours, duration_label,
+      price, old_price, sale_badge, price_note,
+      featured, ribbon, features, sort_order, published
+    ) VALUES (
+      ${input.slug}, ${input.name}, ${input.duration_hours}, ${input.duration_label},
+      ${input.price}, ${input.old_price}, ${input.sale_badge}, ${input.price_note},
+      ${input.featured}, ${input.ribbon},
+      ${JSON.stringify(input.features)}::jsonb,
+      ${input.sort_order}, ${input.published}
+    )
+    RETURNING *
+  `;
+  return rows[0] as Package;
+}
+
+export async function updatePackage(id: number, input: PackageInput): Promise<Package> {
+  const rows = await sql`
+    UPDATE packages SET
+      slug = ${input.slug},
+      name = ${input.name},
+      duration_hours = ${input.duration_hours},
+      duration_label = ${input.duration_label},
+      price = ${input.price},
+      old_price = ${input.old_price},
+      sale_badge = ${input.sale_badge},
+      price_note = ${input.price_note},
+      featured = ${input.featured},
+      ribbon = ${input.ribbon},
+      features = ${JSON.stringify(input.features)}::jsonb,
+      sort_order = ${input.sort_order},
+      published = ${input.published}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0] as Package;
+}
+
+export async function deletePackage(id: number): Promise<void> {
+  await sql`DELETE FROM packages WHERE id = ${id}`;
+}
+
+// =============================================================
+// ADMIN: EXTRAS CRUD
+// =============================================================
+
+export interface ExtraInput {
+  slug: string;
+  name: string;
+  price: number;
+  sort_order: number;
+  published: boolean;
+}
+
+export async function createExtra(input: ExtraInput): Promise<Extra> {
+  const rows = await sql`
+    INSERT INTO extras (slug, name, price, sort_order, published)
+    VALUES (${input.slug}, ${input.name}, ${input.price}, ${input.sort_order}, ${input.published})
+    RETURNING *
+  `;
+  return rows[0] as Extra;
+}
+
+export async function updateExtra(id: number, input: ExtraInput): Promise<Extra> {
+  const rows = await sql`
+    UPDATE extras SET
+      slug = ${input.slug},
+      name = ${input.name},
+      price = ${input.price},
+      sort_order = ${input.sort_order},
+      published = ${input.published}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0] as Extra;
+}
+
+export async function deleteExtra(id: number): Promise<void> {
+  await sql`DELETE FROM extras WHERE id = ${id}`;
+}
+
+// =============================================================
+// ADMIN: SETTINGS CRUD
+// =============================================================
+
+export async function getAllSettings(): Promise<Array<{ key: string; value: string | null; description: string | null }>> {
+  const rows = await sql`
+    SELECT key, value, description FROM settings ORDER BY key ASC
+  `;
+  return rows as Array<{ key: string; value: string | null; description: string | null }>;
+}
+
+export async function upsertSetting(key: string, value: string): Promise<void> {
+  await sql`
+    INSERT INTO settings (key, value)
+    VALUES (${key}, ${value})
+    ON CONFLICT (key) DO UPDATE SET value = ${value}, updated_at = NOW()
+  `;
+}
