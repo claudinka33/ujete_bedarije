@@ -1,6 +1,6 @@
 import { getReservations } from '@/lib/queries';
 import Link from 'next/link';
-import { StatusPill } from '../page';
+import StatusPill from '@/components/admin/StatusPill';
 import { Calendar, ArrowUpRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';

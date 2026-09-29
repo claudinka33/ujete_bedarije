@@ -1,8 +1,8 @@
 import { getReservation } from '@/lib/queries';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, User, Phone, Mail, Calendar, MapPin, Package, Sparkles, MessageCircle } from 'lucide-react';
-import { StatusPill } from '../../page';
+import { ArrowLeft, User, Calendar, Package, Sparkles, MessageCircle } from 'lucide-react';
+import StatusPill from '@/components/admin/StatusPill';
 import ReservationActions from './ReservationActions';
 
 export const dynamic = 'force-dynamic';

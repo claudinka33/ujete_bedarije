@@ -1,6 +1,7 @@
 import { sql } from '@/lib/db';
 import Link from 'next/link';
 import { Calendar, CheckCircle2, XCircle, Clock, TrendingUp } from 'lucide-react';
+import StatusPill from '@/components/admin/StatusPill';
 
 export const dynamic = 'force-dynamic';
 
@@ -201,18 +202,3 @@ function StatCard({
   return href ? <Link href={href}>{inner}</Link> : inner;
 }
 
-export function StatusPill({ status }: { status: string }) {
-  const map: Record<string, { label: string; class: string }> = {
-    pending: { label: 'V ČAKANJU', class: 'bg-amber-100 text-amber-700' },
-    confirmed: { label: 'POTRJENO', class: 'bg-green-100 text-green-700' },
-    rejected: { label: 'ZAVRNJENO', class: 'bg-red-100 text-red-700' },
-    completed: { label: 'ZAKLJUČENO', class: 'bg-blue-100 text-blue-700' },
-    cancelled: { label: 'PREKLICANO', class: 'bg-gray-100 text-gray-700' },
-  };
-  const s = map[status] || { label: status.toUpperCase(), class: 'bg-gray-100 text-gray-700' };
-  return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider ${s.class}`}>
-      {s.label}
-    </span>
-  );
-}

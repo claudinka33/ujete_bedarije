@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Trash2, Plus, X } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import type { Package } from '@/lib/queries';
 
 interface Props {
