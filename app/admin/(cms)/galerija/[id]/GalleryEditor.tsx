@@ -24,7 +24,7 @@ export default function GalleryEditor({ gallery: initial, blobConfigured }: Prop
   const [title, setTitle] = useState(initial.title);
   const [slug, setSlug] = useState(initial.slug);
   const [eventType, setEventType] = useState(initial.event_type || '');
-  const [eventDate, setEventDate] = useState(initial.event_date?.slice(0, 10) || '');
+  const [eventDate, setEventDate] = useState(toDateInputValue(initial.event_date));
   const [description, setDescription] = useState(initial.description || '');
   const [published, setPublished] = useState(initial.published);
   const [sortOrder, setSortOrder] = useState(initial.sort_order);
@@ -380,3 +380,14 @@ export default function GalleryEditor({ gallery: initial, blobConfigured }: Prop
 
 const inputClass =
   'mt-1 w-full px-3 py-2 rounded border border-line bg-bg text-ink text-sm focus:outline-none focus:border-accent transition-colors';
+
+/** Convert whatever Postgres returned (Date | ISO string | 'YYYY-MM-DD' | null) into 'YYYY-MM-DD' for <input type="date"> */
+function toDateInputValue(v: unknown): string {
+  if (!v) return '';
+  if (v instanceof Date) {
+    const iso = v.toISOString();
+    return iso.slice(0, 10);
+  }
+  if (typeof v === 'string') return v.slice(0, 10);
+  return '';
+}

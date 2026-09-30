@@ -540,7 +540,9 @@ export interface GalleryInput {
 /** Public: only published + at least one photo */
 export async function getPublicGalleries(): Promise<Gallery[]> {
   const rows = await sql`
-    SELECT g.id, g.slug, g.title, g.event_type, g.event_date, g.description,
+    SELECT g.id, g.slug, g.title, g.event_type,
+           TO_CHAR(g.event_date, 'YYYY-MM-DD') AS event_date,
+           g.description,
            g.cover_photo_url, g.published, g.sort_order, g.created_at, g.updated_at
     FROM galleries g
     WHERE g.published = true
@@ -552,7 +554,9 @@ export async function getPublicGalleries(): Promise<Gallery[]> {
 
 export async function getPublicGalleryBySlug(slug: string): Promise<GalleryWithPhotos | null> {
   const rows = await sql`
-    SELECT id, slug, title, event_type, event_date, description,
+    SELECT id, slug, title, event_type,
+           TO_CHAR(event_date, 'YYYY-MM-DD') AS event_date,
+           description,
            cover_photo_url, published, sort_order, created_at, updated_at
     FROM galleries
     WHERE slug = ${slug} AND published = true
@@ -572,7 +576,9 @@ export async function getPublicGalleryBySlug(slug: string): Promise<GalleryWithP
 /** Admin: all galleries */
 export async function getAllGalleries(): Promise<Gallery[]> {
   const rows = await sql`
-    SELECT id, slug, title, event_type, event_date, description,
+    SELECT id, slug, title, event_type,
+           TO_CHAR(event_date, 'YYYY-MM-DD') AS event_date,
+           description,
            cover_photo_url, published, sort_order, created_at, updated_at
     FROM galleries
     ORDER BY sort_order ASC, event_date DESC NULLS LAST, id DESC
@@ -582,7 +588,9 @@ export async function getAllGalleries(): Promise<Gallery[]> {
 
 export async function getGalleryById(id: number): Promise<GalleryWithPhotos | null> {
   const rows = await sql`
-    SELECT id, slug, title, event_type, event_date, description,
+    SELECT id, slug, title, event_type,
+           TO_CHAR(event_date, 'YYYY-MM-DD') AS event_date,
+           description,
            cover_photo_url, published, sort_order, created_at, updated_at
     FROM galleries WHERE id = ${id} LIMIT 1
   `;
@@ -598,20 +606,25 @@ export async function getGalleryById(id: number): Promise<GalleryWithPhotos | nu
 }
 
 export async function createGallery(input: GalleryInput): Promise<Gallery> {
-  const rows = await sql`
+  await sql`
     INSERT INTO galleries
       (slug, title, event_type, event_date, description, cover_photo_url, published, sort_order)
     VALUES
       (${input.slug}, ${input.title}, ${input.event_type ?? null},
        ${input.event_date ?? null}, ${input.description ?? null},
        ${input.cover_photo_url ?? null}, ${input.published}, ${input.sort_order})
-    RETURNING *
+  `;
+  const rows = await sql`
+    SELECT id, slug, title, event_type,
+           TO_CHAR(event_date, 'YYYY-MM-DD') AS event_date,
+           description, cover_photo_url, published, sort_order, created_at, updated_at
+    FROM galleries WHERE slug = ${input.slug} LIMIT 1
   `;
   return rows[0] as Gallery;
 }
 
 export async function updateGallery(id: number, input: GalleryInput): Promise<Gallery> {
-  const rows = await sql`
+  await sql`
     UPDATE galleries SET
       slug = ${input.slug},
       title = ${input.title},
@@ -622,7 +635,12 @@ export async function updateGallery(id: number, input: GalleryInput): Promise<Ga
       published = ${input.published},
       sort_order = ${input.sort_order}
     WHERE id = ${id}
-    RETURNING *
+  `;
+  const rows = await sql`
+    SELECT id, slug, title, event_type,
+           TO_CHAR(event_date, 'YYYY-MM-DD') AS event_date,
+           description, cover_photo_url, published, sort_order, created_at, updated_at
+    FROM galleries WHERE id = ${id} LIMIT 1
   `;
   return rows[0] as Gallery;
 }
