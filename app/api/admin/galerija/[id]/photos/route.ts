@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import { addGalleryPhoto, countGalleryPhotos, getGalleryById } from '@/lib/queries';
 
@@ -105,6 +106,10 @@ export async function POST(
       );
     }
   }
+
+  revalidatePath('/', 'page');
+  revalidatePath('/admin/galerija', 'page');
+  revalidatePath(`/admin/galerija/${galleryId}`, 'page');
 
   return NextResponse.json({ ok: true, photos: uploaded }, { status: 201 });
 }

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import { createGallery, type GalleryInput } from '@/lib/queries';
 
@@ -38,6 +39,8 @@ export async function POST(request: NextRequest) {
       sort_order: body.sort_order ?? 0,
     };
     const gallery = await createGallery(input);
+    revalidatePath('/', 'page');
+    revalidatePath('/admin/galerija', 'page');
     return NextResponse.json({ ok: true, gallery }, { status: 201 });
   } catch (error) {
     console.error('POST gallery error:', error);

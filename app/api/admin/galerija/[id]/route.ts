@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import {
   updateGallery,
@@ -7,6 +8,12 @@ import {
 } from '@/lib/queries';
 
 export const runtime = 'nodejs';
+
+function invalidateGalleryPaths(id: number) {
+  revalidatePath('/', 'page');
+  revalidatePath('/admin/galerija', 'page');
+  revalidatePath(`/admin/galerija/${id}`, 'page');
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -22,6 +29,7 @@ export async function PATCH(
   try {
     const body = (await request.json()) as GalleryInput;
     const gallery = await updateGallery(id, body);
+    invalidateGalleryPaths(id);
     return NextResponse.json({ ok: true, gallery });
   } catch (error) {
     console.error('PATCH gallery error:', error);
@@ -58,6 +66,7 @@ export async function DELETE(
       }
     }
 
+    invalidateGalleryPaths(id);
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('DELETE gallery error:', error);

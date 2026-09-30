@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import { deleteGalleryPhoto, setGalleryCover, getGalleryPhotoById } from '@/lib/queries';
 
 export const runtime = 'nodejs';
+
+function invalidateGalleryPaths(id: number) {
+  revalidatePath('/', 'page');
+  revalidatePath('/admin/galerija', 'page');
+  revalidatePath(`/admin/galerija/${id}`, 'page');
+}
 
 export async function DELETE(
   _request: NextRequest,
@@ -34,6 +41,7 @@ export async function DELETE(
       }
     }
 
+    invalidateGalleryPaths(parseInt(params.id, 10));
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('DELETE photo error:', error);
@@ -67,6 +75,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Fotografija ni najdena' }, { status: 404 });
     }
     await setGalleryCover(galleryId, photo.photo_url);
+    invalidateGalleryPaths(galleryId);
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('PATCH photo error:', error);
