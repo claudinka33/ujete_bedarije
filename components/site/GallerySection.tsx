@@ -58,84 +58,105 @@ export default function GallerySection({ galleries }: Props) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {galleries.map((g) => (
-          <div key={g.id} className="bg-surface border border-line rounded-lg overflow-hidden">
-            {/* Cover — click to open first photo */}
-            <button
-              type="button"
-              onClick={() =>
-                g.photos.length > 0 && setActiveIdx({ gid: g.id, pidx: 0 })
-              }
-              className="block w-full aspect-video bg-bg overflow-hidden group relative"
+        {galleries.map((g) => {
+          const openLightbox = () => {
+            if (g.photos.length > 0) setActiveIdx({ gid: g.id, pidx: 0 });
+          };
+          return (
+            <div
+              key={g.id}
+              onClick={openLightbox}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  openLightbox();
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className="bg-surface border border-line rounded-lg overflow-hidden cursor-pointer hover:border-accent hover:shadow-md transition-all group focus:outline-none focus:ring-2 focus:ring-accent"
             >
-              {g.cover_photo_url ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={g.cover_photo_url}
-                  alt={g.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-muted">
-                  <Images size={32} />
-                </div>
-              )}
-              {g.photos.length > 1 && (
-                <div className="absolute bottom-2 right-2 px-2 py-1 rounded-full bg-black/60 text-white text-xs font-semibold backdrop-blur-sm">
-                  +{g.photos.length - 1} slik
-                </div>
-              )}
-            </button>
-
-            <div className="p-4">
-              <div className="font-semibold text-ink truncate">{g.title}</div>
-              <div className="flex items-center gap-3 mt-1 text-xs text-muted">
-                {g.event_type && <span>{g.event_type}</span>}
-                {g.event_date && (
-                  <span>
-                    {new Date(g.event_date).toLocaleDateString('sl-SI', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </span>
+              {/* Cover */}
+              <div className="block w-full aspect-video bg-bg overflow-hidden relative">
+                {g.cover_photo_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={g.cover_photo_url}
+                    alt={g.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted">
+                    <Images size={32} />
+                  </div>
+                )}
+                {g.photos.length > 1 && (
+                  <div className="absolute bottom-2 right-2 px-2 py-1 rounded-full bg-black/60 text-white text-xs font-semibold backdrop-blur-sm">
+                    +{g.photos.length - 1} slik
+                  </div>
                 )}
               </div>
 
-              {/* Thumbnail strip */}
-              {g.photos.length > 1 && (
-                <div className="mt-3 flex gap-1 overflow-x-auto pb-1">
-                  {g.photos.slice(0, 6).map((p, idx) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => setActiveIdx({ gid: g.id, pidx: idx })}
-                      className="flex-shrink-0 w-12 h-12 rounded overflow-hidden border border-line hover:border-accent transition-colors"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={p.photo_url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </button>
-                  ))}
-                  {g.photos.length > 6 && (
-                    <button
-                      type="button"
-                      onClick={() => setActiveIdx({ gid: g.id, pidx: 6 })}
-                      className="flex-shrink-0 w-12 h-12 rounded bg-bg border border-line flex items-center justify-center text-xs font-semibold text-muted hover:border-accent"
-                    >
-                      +{g.photos.length - 6}
-                    </button>
+              <div className="p-4">
+                <div className="font-semibold text-ink truncate">{g.title}</div>
+                <div className="flex items-center gap-3 mt-1 text-xs text-muted">
+                  {g.event_type && <span>{g.event_type}</span>}
+                  {g.event_date && (
+                    <span>
+                      {new Date(g.event_date).toLocaleDateString('sl-SI', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </span>
                   )}
                 </div>
-              )}
+
+                {/* Thumbnail strip — separate click targets so they open specific photos */}
+                {g.photos.length > 1 && (
+                  <div className="mt-3 flex gap-1 overflow-x-auto pb-1">
+                    {g.photos.slice(0, 6).map((p, idx) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveIdx({ gid: g.id, pidx: idx });
+                        }}
+                        className="flex-shrink-0 w-12 h-12 rounded overflow-hidden border border-line hover:border-accent transition-colors"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={p.photo_url}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </button>
+                    ))}
+                    {g.photos.length > 6 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveIdx({ gid: g.id, pidx: 6 });
+                        }}
+                        className="flex-shrink-0 w-12 h-12 rounded bg-bg border border-line flex items-center justify-center text-xs font-semibold text-muted hover:border-accent"
+                      >
+                        +{g.photos.length - 6}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <div className="mt-3 inline-flex items-center gap-1 text-xs text-accent-dark font-semibold opacity-70 group-hover:opacity-100 transition-opacity">
+                  Odpri galerijo →
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* LIGHTBOX */}
