@@ -1,11 +1,15 @@
 import Link from 'next/link';
 import { Images, CheckCircle2, EyeOff, Calendar } from 'lucide-react';
+import { unstable_noStore as noStore } from 'next/cache';
 import { getAllGalleries } from '@/lib/queries';
 import NewGalleryButton from './NewGalleryButton';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export default async function GalleryListPage() {
+  noStore();
   const galleries = await getAllGalleries();
 
   return (

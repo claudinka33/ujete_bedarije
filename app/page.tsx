@@ -9,14 +9,18 @@ import {
   getPublicGalleryBySlug,
 } from '@/lib/queries';
 import { Check, Phone, Mail, Star } from 'lucide-react';
+import { unstable_noStore as noStore } from 'next/cache';
 import BookingProvider from '@/components/booking/BookingProvider';
 import BookingButton from '@/components/booking/BookingButton';
 import FaqAccordion from '@/components/site/FaqAccordion';
 import GallerySection from '@/components/site/GallerySection';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export default async function HomePage() {
+  noStore();
   const [packages, extras, reviews, faq, settings, galleries] = await Promise.all([
     getPackages(),
     getExtras(),
