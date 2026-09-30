@@ -36,6 +36,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     /**
+     * Nadzor dostopa — kliče se pri vsakem requestu na zaščiten route.
+     * Prepreči redirect loop tako, da izrecno dovoli /admin/login,
+     * NextAuth pa samodejno redirect-a na signIn page pri drugih /admin/* rutah.
+     */
+    authorized({ auth: session, request: { nextUrl } }) {
+      const path = nextUrl.pathname;
+      const isLoggedIn = !!session;
+
+      // Login page je vedno dostopna
+      if (path === '/admin/login') {
+        // Če je uporabnik že prijavljen, ga preusmeri na dashboard
+        if (isLoggedIn) {
+          return Response.redirect(new URL('/admin', nextUrl));
+        }
+        return true;
+      }
+
+      // Ostale /admin/* poti zahtevajo prijavo
+      if (path.startsWith('/admin')) {
+        return isLoggedIn; // NextAuth avtomatsko preusmeri na signIn (=/admin/login)
+      }
+
+      // Vse ostalo je dostopno vsem
+      return true;
+    },
+    /**
      * Preverimo email whitelist — samo Claudia, Anita, Stane lahko notri.
      */
     async signIn({ user }) {

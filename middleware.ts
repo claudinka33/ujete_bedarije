@@ -1,27 +1,9 @@
-import { auth } from '@/auth';
-import { NextResponse } from 'next/server';
-
 /**
- * Middleware — zaščiti vse /admin/* poti (razen /admin/login).
- * Če uporabnik ni prijavljen ali ni na whitelist, preusmeri na login.
+ * Middleware — samo re-eksportira NextAuth-ov auth handler.
+ * Vsa logika (kdo lahko dostopa do česa) je v callbacks.authorized() v auth.ts.
+ * Ta pristop odpravi risk redirect loop-a.
  */
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
-  const path = req.nextUrl.pathname;
-  const isLoginPage = path === '/admin/login';
-  const isAdminRoute = path.startsWith('/admin');
-
-  if (isAdminRoute && !isLoginPage && !isLoggedIn) {
-    const url = req.nextUrl.clone();
-    url.pathname = '/admin/login';
-    url.searchParams.set('callbackUrl', path);
-    return NextResponse.redirect(url);
-  }
-
-  if (isLoginPage && isLoggedIn) {
-    return NextResponse.redirect(new URL('/admin', req.nextUrl));
-  }
-});
+export { auth as default } from '@/auth';
 
 export const config = {
   matcher: ['/admin/:path*'],
