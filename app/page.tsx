@@ -408,6 +408,9 @@ export default async function HomePage() {
               <a href={`mailto:${settings.email || 'ujete.bedarije@gmail.com'}`} className="hover:text-ink-soft transition-colors">
                 Kontakt
               </a>
+              <a href="/admin" className="hover:text-ink-soft transition-colors opacity-60">
+                Za zaposlene
+              </a>
             </div>
             <p className="mt-6 text-xs">
               &copy; {new Date().getFullYear()} Ujete Bedarije. Vse pravice pridržane.
