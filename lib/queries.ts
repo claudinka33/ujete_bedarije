@@ -382,3 +382,114 @@ export async function upsertSetting(key: string, value: string): Promise<void> {
     ON CONFLICT (key) DO UPDATE SET value = ${value}, updated_at = NOW()
   `;
 }
+
+// =============================================================
+// ADMIN: REVIEWS CRUD
+// =============================================================
+
+export interface ReviewInput {
+  reviewer_name: string;
+  reviewer_initial: string | null;
+  avatar_variant: number;
+  event_type: string;
+  location: string;
+  region: string | null;
+  rating: number;
+  text: string;
+  sort_order: number;
+  published: boolean;
+}
+
+export async function getAllReviews(): Promise<Review[]> {
+  const rows = await sql`
+    SELECT id, reviewer_name, reviewer_initial, avatar_variant,
+           event_type, location, region, rating, text, sort_order, published
+    FROM reviews
+    ORDER BY sort_order ASC
+  ` as (Review & { published: boolean })[];
+  return rows;
+}
+
+export async function createReview(input: ReviewInput): Promise<Review> {
+  const rows = await sql`
+    INSERT INTO reviews (
+      reviewer_name, reviewer_initial, avatar_variant,
+      event_type, location, region, rating, text, sort_order, published
+    ) VALUES (
+      ${input.reviewer_name}, ${input.reviewer_initial}, ${input.avatar_variant},
+      ${input.event_type}, ${input.location}, ${input.region},
+      ${input.rating}, ${input.text}, ${input.sort_order}, ${input.published}
+    )
+    RETURNING *
+  `;
+  return rows[0] as Review;
+}
+
+export async function updateReview(id: number, input: ReviewInput): Promise<Review> {
+  const rows = await sql`
+    UPDATE reviews SET
+      reviewer_name = ${input.reviewer_name},
+      reviewer_initial = ${input.reviewer_initial},
+      avatar_variant = ${input.avatar_variant},
+      event_type = ${input.event_type},
+      location = ${input.location},
+      region = ${input.region},
+      rating = ${input.rating},
+      text = ${input.text},
+      sort_order = ${input.sort_order},
+      published = ${input.published}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0] as Review;
+}
+
+export async function deleteReview(id: number): Promise<void> {
+  await sql`DELETE FROM reviews WHERE id = ${id}`;
+}
+
+// =============================================================
+// ADMIN: FAQ CRUD
+// =============================================================
+
+export interface FaqInput {
+  question: string;
+  answer: string;
+  sort_order: number;
+  published: boolean;
+}
+
+export async function getAllFaqItems(): Promise<FaqItem[]> {
+  const rows = await sql`
+    SELECT id, question, answer, sort_order, published
+    FROM faq_items
+    ORDER BY sort_order ASC
+  `;
+  return rows as FaqItem[];
+}
+
+export async function createFaqItem(input: FaqInput): Promise<FaqItem> {
+  const rows = await sql`
+    INSERT INTO faq_items (question, answer, sort_order, published)
+    VALUES (${input.question}, ${input.answer}, ${input.sort_order}, ${input.published})
+    RETURNING *
+  `;
+  return rows[0] as FaqItem;
+}
+
+export async function updateFaqItem(id: number, input: FaqInput): Promise<FaqItem> {
+  const rows = await sql`
+    UPDATE faq_items SET
+      question = ${input.question},
+      answer = ${input.answer},
+      sort_order = ${input.sort_order},
+      published = ${input.published}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0] as FaqItem;
+}
+
+export async function deleteFaqItem(id: number): Promise<void> {
+  await sql`DELETE FROM faq_items WHERE id = ${id}`;
+}
