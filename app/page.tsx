@@ -398,7 +398,18 @@ export default async function HomePage() {
               {settings.company_name || 'Ujete Bedarije'}
             </div>
             <p>Photo Booth Slovenija · {settings.service_area || 'Slovenija'}</p>
-            <p className="mt-4 text-xs">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs">
+              <a href="/pravila-zasebnosti" className="hover:text-ink-soft transition-colors">
+                Pravila zasebnosti
+              </a>
+              <a href="/pogoji-uporabe" className="hover:text-ink-soft transition-colors">
+                Pogoji uporabe
+              </a>
+              <a href={`mailto:${settings.email || 'ujete.bedarije@gmail.com'}`} className="hover:text-ink-soft transition-colors">
+                Kontakt
+              </a>
+            </div>
+            <p className="mt-6 text-xs">
               &copy; {new Date().getFullYear()} Ujete Bedarije. Vse pravice pridržane.
             </p>
           </div>
