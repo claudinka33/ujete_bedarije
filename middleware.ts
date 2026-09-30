@@ -1,9 +1,36 @@
+import { auth } from '@/auth';
+import { NextResponse } from 'next/server';
+
 /**
- * Middleware — samo re-eksportira NextAuth-ov auth handler.
- * Vsa logika (kdo lahko dostopa do česa) je v callbacks.authorized() v auth.ts.
- * Ta pristop odpravi risk redirect loop-a.
+ * Explicitna middleware logika — brez zanašanja na NextAuth default behavior.
+ *
+ * - /admin/login: dostopen vsem; če je uporabnik že prijavljen → redirect na /admin
+ * - /admin/*: zahteva prijavo; neprijavljeni gredo na /admin/login
+ * - vsi ostali: dovoli naprej
  */
-export { auth as default } from '@/auth';
+export default auth((req) => {
+  const isLoggedIn = !!req.auth;
+  const path = req.nextUrl.pathname;
+  const isLoginPage = path === '/admin/login';
+  const isAdminRoute = path.startsWith('/admin');
+
+  // Login page: če prijavljen → dashboard, sicer prikazi login
+  if (isLoginPage) {
+    if (isLoggedIn) {
+      return NextResponse.redirect(new URL('/admin', req.nextUrl));
+    }
+    return NextResponse.next();
+  }
+
+  // Ostale /admin/* rute: zahtevajo prijavo
+  if (isAdminRoute && !isLoggedIn) {
+    const loginUrl = new URL('/admin/login', req.nextUrl);
+    loginUrl.searchParams.set('callbackUrl', path);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: ['/admin/:path*'],
