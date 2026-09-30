@@ -4,22 +4,32 @@ import {
   getReviews,
   getFaqItems,
   getSettings,
+  getPublicGalleries,
+  type GalleryWithPhotos,
+  getPublicGalleryBySlug,
 } from '@/lib/queries';
 import { Check, Phone, Mail, Star } from 'lucide-react';
 import BookingProvider from '@/components/booking/BookingProvider';
 import BookingButton from '@/components/booking/BookingButton';
 import FaqAccordion from '@/components/site/FaqAccordion';
+import GallerySection from '@/components/site/GallerySection';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [packages, extras, reviews, faq, settings] = await Promise.all([
+  const [packages, extras, reviews, faq, settings, galleries] = await Promise.all([
     getPackages(),
     getExtras(),
     getReviews(),
     getFaqItems(),
     getSettings(),
+    getPublicGalleries(),
   ]);
+
+  // Attach photos to each gallery for the section
+  const galleriesWithPhotos: GalleryWithPhotos[] = (
+    await Promise.all(galleries.map((g) => getPublicGalleryBySlug(g.slug)))
+  ).filter((g): g is GalleryWithPhotos => g !== null);
 
   return (
     <BookingProvider packages={packages} extras={extras}>
@@ -41,6 +51,11 @@ export default async function HomePage() {
               <a href="#paketi" className="hover:text-accent-dark transition-colors">
                 Paketi
               </a>
+              {galleriesWithPhotos.length > 0 && (
+                <a href="#galerija" className="hover:text-accent-dark transition-colors">
+                  Galerija
+                </a>
+              )}
               <a href="#mnenja" className="hover:text-accent-dark transition-colors">
                 Mnenja
               </a>
@@ -231,6 +246,24 @@ export default async function HomePage() {
             )}
           </div>
         </section>
+
+        {/* GALERIJA */}
+        {galleriesWithPhotos.length > 0 && (
+          <section id="galerija" className="py-24 bg-surface">
+            <div className="container-page">
+              <div className="text-center mb-12">
+                <span className="eyebrow">Galerija</span>
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mt-4 mb-4">
+                  Naši dogodki
+                </h2>
+                <p className="text-ink-soft max-w-2xl mx-auto">
+                  Nekaj utrinkov iz preteklih dogodkov. Klikni na sliko za pogled.
+                </p>
+              </div>
+              <GallerySection galleries={galleriesWithPhotos} />
+            </div>
+          </section>
+        )}
 
         {/* MNENJA STRANK */}
         {reviews.length > 0 && (

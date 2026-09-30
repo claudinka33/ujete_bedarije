@@ -493,3 +493,221 @@ export async function updateFaqItem(id: number, input: FaqInput): Promise<FaqIte
 export async function deleteFaqItem(id: number): Promise<void> {
   await sql`DELETE FROM faq_items WHERE id = ${id}`;
 }
+
+// =============================================================
+// GALLERIES
+// =============================================================
+export interface GalleryPhoto {
+  id: number;
+  gallery_id: number;
+  photo_url: string;
+  blob_pathname: string | null;
+  alt_text: string | null;
+  width: number | null;
+  height: number | null;
+  sort_order: number;
+}
+
+export interface Gallery {
+  id: number;
+  slug: string;
+  title: string;
+  event_type: string | null;
+  event_date: string | null;
+  description: string | null;
+  cover_photo_url: string | null;
+  published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GalleryWithPhotos extends Gallery {
+  photos: GalleryPhoto[];
+}
+
+export interface GalleryInput {
+  slug: string;
+  title: string;
+  event_type?: string | null;
+  event_date?: string | null;
+  description?: string | null;
+  cover_photo_url?: string | null;
+  published: boolean;
+  sort_order: number;
+}
+
+/** Public: only published + at least one photo */
+export async function getPublicGalleries(): Promise<Gallery[]> {
+  const rows = await sql`
+    SELECT g.id, g.slug, g.title, g.event_type, g.event_date, g.description,
+           g.cover_photo_url, g.published, g.sort_order, g.created_at, g.updated_at
+    FROM galleries g
+    WHERE g.published = true
+      AND EXISTS (SELECT 1 FROM gallery_photos p WHERE p.gallery_id = g.id)
+    ORDER BY g.sort_order ASC, g.event_date DESC NULLS LAST, g.id DESC
+  `;
+  return rows as Gallery[];
+}
+
+export async function getPublicGalleryBySlug(slug: string): Promise<GalleryWithPhotos | null> {
+  const rows = await sql`
+    SELECT id, slug, title, event_type, event_date, description,
+           cover_photo_url, published, sort_order, created_at, updated_at
+    FROM galleries
+    WHERE slug = ${slug} AND published = true
+    LIMIT 1
+  `;
+  if (rows.length === 0) return null;
+  const gallery = rows[0] as Gallery;
+  const photos = await sql`
+    SELECT id, gallery_id, photo_url, blob_pathname, alt_text, width, height, sort_order
+    FROM gallery_photos
+    WHERE gallery_id = ${gallery.id}
+    ORDER BY sort_order ASC, id ASC
+  `;
+  return { ...gallery, photos: photos as GalleryPhoto[] };
+}
+
+/** Admin: all galleries */
+export async function getAllGalleries(): Promise<Gallery[]> {
+  const rows = await sql`
+    SELECT id, slug, title, event_type, event_date, description,
+           cover_photo_url, published, sort_order, created_at, updated_at
+    FROM galleries
+    ORDER BY sort_order ASC, event_date DESC NULLS LAST, id DESC
+  `;
+  return rows as Gallery[];
+}
+
+export async function getGalleryById(id: number): Promise<GalleryWithPhotos | null> {
+  const rows = await sql`
+    SELECT id, slug, title, event_type, event_date, description,
+           cover_photo_url, published, sort_order, created_at, updated_at
+    FROM galleries WHERE id = ${id} LIMIT 1
+  `;
+  if (rows.length === 0) return null;
+  const gallery = rows[0] as Gallery;
+  const photos = await sql`
+    SELECT id, gallery_id, photo_url, blob_pathname, alt_text, width, height, sort_order
+    FROM gallery_photos
+    WHERE gallery_id = ${gallery.id}
+    ORDER BY sort_order ASC, id ASC
+  `;
+  return { ...gallery, photos: photos as GalleryPhoto[] };
+}
+
+export async function createGallery(input: GalleryInput): Promise<Gallery> {
+  const rows = await sql`
+    INSERT INTO galleries
+      (slug, title, event_type, event_date, description, cover_photo_url, published, sort_order)
+    VALUES
+      (${input.slug}, ${input.title}, ${input.event_type ?? null},
+       ${input.event_date ?? null}, ${input.description ?? null},
+       ${input.cover_photo_url ?? null}, ${input.published}, ${input.sort_order})
+    RETURNING *
+  `;
+  return rows[0] as Gallery;
+}
+
+export async function updateGallery(id: number, input: GalleryInput): Promise<Gallery> {
+  const rows = await sql`
+    UPDATE galleries SET
+      slug = ${input.slug},
+      title = ${input.title},
+      event_type = ${input.event_type ?? null},
+      event_date = ${input.event_date ?? null},
+      description = ${input.description ?? null},
+      cover_photo_url = ${input.cover_photo_url ?? null},
+      published = ${input.published},
+      sort_order = ${input.sort_order}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0] as Gallery;
+}
+
+export async function deleteGallery(id: number): Promise<GalleryPhoto[]> {
+  // Return photos so caller can also delete blobs
+  const photos = await sql`
+    SELECT id, gallery_id, photo_url, blob_pathname, alt_text, width, height, sort_order
+    FROM gallery_photos WHERE gallery_id = ${id}
+  `;
+  await sql`DELETE FROM galleries WHERE id = ${id}`;
+  return photos as GalleryPhoto[];
+}
+
+export async function countGalleryPhotos(galleryId: number): Promise<number> {
+  const rows = await sql`SELECT COUNT(*)::int AS c FROM gallery_photos WHERE gallery_id = ${galleryId}`;
+  return (rows[0] as { c: number }).c;
+}
+
+export async function addGalleryPhoto(input: {
+  gallery_id: number;
+  photo_url: string;
+  blob_pathname?: string | null;
+  alt_text?: string | null;
+  width?: number | null;
+  height?: number | null;
+}): Promise<GalleryPhoto> {
+  // sort_order = current max + 1
+  const maxRow = await sql`
+    SELECT COALESCE(MAX(sort_order), 0) AS m FROM gallery_photos WHERE gallery_id = ${input.gallery_id}
+  `;
+  const nextOrder = ((maxRow[0] as { m: number }).m ?? 0) + 1;
+
+  const rows = await sql`
+    INSERT INTO gallery_photos
+      (gallery_id, photo_url, blob_pathname, alt_text, width, height, sort_order)
+    VALUES
+      (${input.gallery_id}, ${input.photo_url}, ${input.blob_pathname ?? null},
+       ${input.alt_text ?? null}, ${input.width ?? null}, ${input.height ?? null},
+       ${nextOrder})
+    RETURNING *
+  `;
+  const photo = rows[0] as GalleryPhoto;
+
+  // If gallery has no cover yet, use this photo as cover
+  await sql`
+    UPDATE galleries
+    SET cover_photo_url = ${photo.photo_url}
+    WHERE id = ${input.gallery_id} AND (cover_photo_url IS NULL OR cover_photo_url = '')
+  `;
+
+  return photo;
+}
+
+export async function getGalleryPhotoById(id: number): Promise<GalleryPhoto | null> {
+  const rows = await sql`
+    SELECT id, gallery_id, photo_url, blob_pathname, alt_text, width, height, sort_order
+    FROM gallery_photos WHERE id = ${id} LIMIT 1
+  `;
+  return (rows[0] as GalleryPhoto) ?? null;
+}
+
+export async function deleteGalleryPhoto(id: number): Promise<GalleryPhoto | null> {
+  const photo = await getGalleryPhotoById(id);
+  if (!photo) return null;
+  await sql`DELETE FROM gallery_photos WHERE id = ${id}`;
+  // If this photo was the cover, replace with first remaining
+  await sql`
+    UPDATE galleries
+    SET cover_photo_url = (
+      SELECT photo_url FROM gallery_photos
+      WHERE gallery_id = ${photo.gallery_id}
+      ORDER BY sort_order ASC, id ASC LIMIT 1
+    )
+    WHERE id = ${photo.gallery_id} AND cover_photo_url = ${photo.photo_url}
+  `;
+  return photo;
+}
+
+export async function setGalleryCover(galleryId: number, photoUrl: string): Promise<void> {
+  await sql`UPDATE galleries SET cover_photo_url = ${photoUrl} WHERE id = ${galleryId}`;
+}
+
+export async function reorderGalleryPhotos(orderedIds: number[]): Promise<void> {
+  for (let i = 0; i < orderedIds.length; i++) {
+    await sql`UPDATE gallery_photos SET sort_order = ${i + 1} WHERE id = ${orderedIds[i]}`;
+  }
+}
