@@ -27,8 +27,15 @@ export default async function HomePage() {
         {/* NAV */}
         <nav className="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-line">
           <div className="container-page flex items-center justify-between py-4">
-            <a href="/" className="font-bold text-lg tracking-tight">
-              Ujete Bedarije
+            <a href="/" className="flex items-center" aria-label="Ujete Bedarije Photobooth">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt="Ujete Bedarije Photobooth"
+                width={180}
+                height={72}
+                className="h-10 md:h-12 w-auto"
+              />
             </a>
             <div className="hidden md:flex items-center gap-8 text-sm">
               <a href="#paketi" className="hover:text-accent-dark transition-colors">
@@ -394,9 +401,14 @@ export default async function HomePage() {
         {/* FOOTER */}
         <footer className="border-t border-line py-12 bg-surface">
           <div className="container-page text-center text-sm text-muted">
-            <div className="font-bold text-ink text-lg mb-2">
-              {settings.company_name || 'Ujete Bedarije'}
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="Ujete Bedarije Photobooth"
+              width={220}
+              height={88}
+              className="h-14 w-auto mx-auto mb-4 opacity-90"
+            />
             <p>Photo Booth Slovenija · {settings.service_area || 'Slovenija'}</p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-xs">
               <a href="/pravila-zasebnosti" className="hover:text-ink-soft transition-colors">

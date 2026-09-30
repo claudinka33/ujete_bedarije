@@ -34,10 +34,15 @@ export default async function AdminLayout({
       {/* Sidebar */}
       <aside className="md:w-64 md:min-h-screen bg-surface border-b md:border-b-0 md:border-r border-line">
         <div className="p-6">
-          <Link href="/admin" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-ink text-bg flex items-center justify-center font-bold text-sm">
-              UB
-            </div>
+          <Link href="/admin" className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-sm.png"
+              alt="Ujete Bedarije"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain"
+            />
             <div>
               <div className="font-bold text-sm">Ujete Bedarije</div>
               <div className="text-xs text-muted">CMS</div>

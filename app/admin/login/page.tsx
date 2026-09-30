@@ -1,5 +1,4 @@
 import { signIn } from '@/auth';
-import { Lock } from 'lucide-react';
 
 export default function LoginPage({
   searchParams,
@@ -12,11 +11,16 @@ export default function LoginPage({
     <div className="min-h-screen flex items-center justify-center px-4 bg-bg">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex w-16 h-16 items-center justify-center rounded-full bg-accent/10 mb-6">
-            <Lock size={24} className="text-accent-dark" />
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            CMS Ujete Bedarije
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="Ujete Bedarije Photobooth"
+            width={240}
+            height={96}
+            className="h-16 w-auto mx-auto mb-6"
+          />
+          <h1 className="text-2xl font-bold tracking-tight mb-2">
+            CMS Prijava
           </h1>
           <p className="text-ink-soft text-sm">
             Prijavi se s svojim Google računom.
