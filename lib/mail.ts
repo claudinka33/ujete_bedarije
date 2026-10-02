@@ -1,4 +1,5 @@
 import type { Reservation } from './queries';
+import { sql } from './db';
 
 /**
  * Email helpers. All functions are no-ops (just log) when
@@ -11,6 +12,93 @@ const REPLY_TO = process.env.MAIL_REPLY_TO || 'ujete.bedarije@gmail.com';
 const STAFF_NOTIFY = (process.env.STAFF_NOTIFY_EMAILS ||
   'szekar14@gmail.com,stanislavzekar@gmail.com')
   .split(',').map((e) => e.trim()).filter(Boolean);
+
+// -------------------------------------------------------------------
+// TEMPLATE SETTINGS — editable by staff via /admin/mail
+// -------------------------------------------------------------------
+
+/** Keys of mail-template settings rows the admin can edit. */
+export const MAIL_TEMPLATE_KEYS = [
+  'mail_new_reservation_subject',
+  'mail_new_reservation_body',
+  'mail_approved_subject',
+  'mail_approved_body',
+  'mail_approved_whatsnext',
+  'mail_approved_closing',
+  'mail_rejected_subject',
+  'mail_rejected_body',
+  'mail_rejected_closing',
+] as const;
+export type MailTemplateKey = (typeof MAIL_TEMPLATE_KEYS)[number];
+
+/** Hard-coded fallbacks, used when settings table has no value for a key. */
+const DEFAULTS: Record<MailTemplateKey, string> = {
+  mail_new_reservation_subject: 'Nova rezervacija: {{polno_ime}} · {{datum}}',
+  mail_new_reservation_body:
+    'Stranka je oddala rezervacijo preko spletne strani. Pregled podatkov spodaj — v CMS lahko potrdiš ali zavrneš.',
+  mail_approved_subject: 'Vaša rezervacija je potrjena ✓ · {{datum}}',
+  mail_approved_body:
+    'Pozdravljeni {{ime}},\nz veseljem potrjujemo vašo rezervacijo photo booth-a. Veselimo se dogodka!',
+  mail_approved_whatsnext:
+    'Dan pred dogodkom vas pokličemo za potrditev časa in natančnega naslova.\n' +
+    'Prihod je brezplačen znotraj Slovenije.\n' +
+    'Če želite kaj spremeniti, nam pišite na {{email_kontakt}}.',
+  mail_approved_closing: 'Hvala za zaupanje!\nEkipa Ujete Bedarije',
+  mail_rejected_subject: 'Rezervacija ni mogoča · {{datum}}',
+  mail_rejected_body:
+    'Pozdravljeni {{ime}},\nhvala za vaše zanimanje. Za {{datum}} žal nismo prosti.',
+  mail_rejected_closing:
+    'Če želite preveriti kakšen drug termin, nam pišite ali pokličite — z veseljem najdemo rešitev.\n\nEkipa Ujete Bedarije',
+};
+
+export async function getMailTemplates(): Promise<Record<MailTemplateKey, string>> {
+  try {
+    const rows = (await sql`
+      SELECT key, value FROM settings WHERE key = ANY(${MAIL_TEMPLATE_KEYS as unknown as string[]})
+    `) as Array<{ key: string; value: string }>;
+    const result = { ...DEFAULTS };
+    for (const r of rows) {
+      if ((MAIL_TEMPLATE_KEYS as readonly string[]).includes(r.key) && r.value) {
+        result[r.key as MailTemplateKey] = r.value;
+      }
+    }
+    return result;
+  } catch (err) {
+    console.error('[mail] getMailTemplates failed, using defaults:', err);
+    return { ...DEFAULTS };
+  }
+}
+
+/** Replace {{variable}} placeholders in a template string. */
+function substitute(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, name) => {
+    return vars[name] !== undefined ? vars[name] : `{{${name}}}`;
+  });
+}
+
+/** Convert plain-text (with \n line-breaks) to safe HTML with <br> tags. */
+function textToHtml(text: string): string {
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return escaped.replace(/\n/g, '<br>');
+}
+
+/** Build the variable map from a reservation. */
+function reservationVars(r: Reservation): Record<string, string> {
+  return {
+    ime: r.customer_name.split(' ')[0] || r.customer_name,
+    polno_ime: r.customer_name,
+    datum: fmtDate(r.event_date),
+    ura: r.event_time ? r.event_time.slice(0, 5) : '',
+    lokacija: r.event_location || '',
+    tip_dogodka: r.event_type || '',
+    paket: r.package_name_snapshot || '',
+    razlog: r.rejection_reason || '',
+    email_kontakt: REPLY_TO,
+  };
+}
 
 interface SendArgs {
   to: string | string[];
@@ -141,13 +229,18 @@ function detailsBlock(r: Partial<Reservation>): string {
 // -------------------------------------------------------------------
 // 1) NEW RESERVATION → STAFF (Anita + Stane)
 // -------------------------------------------------------------------
-export function buildNewReservationStaffEmail(reservation: Reservation): {
-  subject: string; html: string;
-} {
-  const subject = `Nova rezervacija: ${reservation.customer_name} · ${fmtDate(reservation.event_date)}`;
+export async function buildNewReservationStaffEmail(
+  reservation: Reservation,
+  overrides?: Partial<Record<MailTemplateKey, string>>
+): Promise<{ subject: string; html: string }> {
+  const t = await getMailTemplates();
+  const merged = { ...t, ...(overrides || {}) };
+  const vars = reservationVars(reservation);
+  const subject = substitute(merged.mail_new_reservation_subject, vars);
+  const bodyText = substitute(merged.mail_new_reservation_body, vars);
   const html = wrap(`
     <h1 style="margin:0 0 8px 0;font-size:22px;font-weight:700;">Nova rezervacija</h1>
-    <p style="margin:0;color:#5a5248;">Stranka je oddala rezervacijo preko spletne strani. Pregled podatkov spodaj — v CMS lahko potrdiš ali zavrneš.</p>
+    <p style="margin:0;color:#5a5248;">${textToHtml(bodyText)}</p>
     ${detailsBlock(reservation)}
     <div style="margin-top:24px;text-align:center;">
       <a href="https://www.ujetebedarije.si/admin/rezervacije/${reservation.id}"
@@ -160,7 +253,7 @@ export function buildNewReservationStaffEmail(reservation: Reservation): {
 }
 
 export async function mailNewReservationToStaff(reservation: Reservation) {
-  const { subject, html } = buildNewReservationStaffEmail(reservation);
+  const { subject, html } = await buildNewReservationStaffEmail(reservation);
   return send({
     to: STAFF_NOTIFY,
     subject,
@@ -172,34 +265,41 @@ export async function mailNewReservationToStaff(reservation: Reservation) {
 // -------------------------------------------------------------------
 // 2) APPROVED → CUSTOMER
 // -------------------------------------------------------------------
-export function buildApprovedCustomerEmail(reservation: Reservation): {
-  subject: string; html: string;
-} {
-  const subject = `Vaša rezervacija je potrjena ✓ · ${fmtDate(reservation.event_date)}`;
+export async function buildApprovedCustomerEmail(
+  reservation: Reservation,
+  overrides?: Partial<Record<MailTemplateKey, string>>
+): Promise<{ subject: string; html: string }> {
+  const t = await getMailTemplates();
+  const merged = { ...t, ...(overrides || {}) };
+  const vars = reservationVars(reservation);
+  const subject = substitute(merged.mail_approved_subject, vars);
+  const bodyText = substitute(merged.mail_approved_body, vars);
+  const whatsnextText = substitute(merged.mail_approved_whatsnext, vars);
+  const closingText = substitute(merged.mail_approved_closing, vars);
+
+  // Convert "whatsnext" lines into bulleted list
+  const whatsnextItems = whatsnextText.split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => `• ${textToHtml(l)}`)
+    .join('<br>');
+
   const html = wrap(`
     <div style="display:inline-block;padding:6px 14px;background:#e9f5ec;color:#1b5a2a;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Potrjeno</div>
     <h1 style="margin:12px 0 8px 0;font-size:22px;font-weight:700;">Vaša rezervacija je potrjena!</h1>
-    <p style="margin:0;color:#5a5248;">
-      Pozdravljeni ${reservation.customer_name.split(' ')[0]},<br>
-      z veseljem potrjujemo vašo rezervacijo photo booth-a. Veselimo se dogodka!
-    </p>
+    <p style="margin:0;color:#5a5248;">${textToHtml(bodyText)}</p>
     ${detailsBlock(reservation)}
     <div style="margin-top:24px;padding:16px;background:#faf6f1;border-radius:8px;font-size:14px;color:#5a5248;">
       <strong>Kaj zdaj?</strong><br>
-      • Dan pred dogodkom vas pokličemo za potrditev časa in natančnega naslova.<br>
-      • Prihod je <strong>brezplačen</strong> znotraj Slovenije.<br>
-      • Če želite kaj spremeniti, nam pišite na <a href="mailto:ujete.bedarije@gmail.com" style="color:#1c1a17;">ujete.bedarije@gmail.com</a>.
+      ${whatsnextItems}
     </div>
-    <p style="margin:24px 0 0 0;color:#5a5248;">
-      Hvala za zaupanje!<br>
-      <strong>Ekipa Ujete Bedarije</strong>
-    </p>
+    <p style="margin:24px 0 0 0;color:#5a5248;">${textToHtml(closingText)}</p>
   `, subject);
   return { subject, html };
 }
 
 export async function mailApprovedToCustomer(reservation: Reservation) {
-  const { subject, html } = buildApprovedCustomerEmail(reservation);
+  const { subject, html } = await buildApprovedCustomerEmail(reservation);
   return send({
     to: reservation.customer_email,
     subject,
@@ -210,39 +310,38 @@ export async function mailApprovedToCustomer(reservation: Reservation) {
 // -------------------------------------------------------------------
 // 3) REJECTED → CUSTOMER
 // -------------------------------------------------------------------
-export function buildRejectedCustomerEmail(reservation: Reservation): {
-  subject: string; html: string;
-} {
-  const subject = `Rezervacija ni mogoča · ${fmtDate(reservation.event_date)}`;
+export async function buildRejectedCustomerEmail(
+  reservation: Reservation,
+  overrides?: Partial<Record<MailTemplateKey, string>>
+): Promise<{ subject: string; html: string }> {
+  const t = await getMailTemplates();
+  const merged = { ...t, ...(overrides || {}) };
+  const vars = reservationVars(reservation);
+  const subject = substitute(merged.mail_rejected_subject, vars);
+  const bodyText = substitute(merged.mail_rejected_body, vars);
+  const closingText = substitute(merged.mail_rejected_closing, vars);
+
   const reasonBlock = reservation.rejection_reason
-    ? `<div style="margin:16px 0;padding:14px;background:#faf6f1;border-left:3px solid #d4a5a5;border-radius:4px;color:#5a5248;font-style:italic;">${reservation.rejection_reason}</div>`
+    ? `<div style="margin:16px 0;padding:14px;background:#faf6f1;border-left:3px solid #d4a5a5;border-radius:4px;color:#5a5248;font-style:italic;">${textToHtml(reservation.rejection_reason)}</div>`
     : '';
 
   const html = wrap(`
     <h1 style="margin:0 0 8px 0;font-size:22px;font-weight:700;">Žal rezervacija ni mogoča</h1>
-    <p style="margin:0;color:#5a5248;">
-      Pozdravljeni ${reservation.customer_name.split(' ')[0]},<br>
-      hvala za vaše zanimanje. Za <strong>${fmtDate(reservation.event_date)}</strong> žal nismo prosti.
-    </p>
+    <p style="margin:0;color:#5a5248;">${textToHtml(bodyText)}</p>
     ${reasonBlock}
-    <p style="margin:16px 0;color:#5a5248;">
-      Če želite preveriti kakšen drug termin, nam pišite ali pokličite — z veseljem najdemo rešitev.
-    </p>
+    <p style="margin:16px 0;color:#5a5248;">${textToHtml(closingText)}</p>
     <div style="margin-top:24px;text-align:center;">
       <a href="https://www.ujetebedarije.si"
          style="display:inline-block;padding:12px 24px;background:#1c1a17;color:#fdfaf4;text-decoration:none;border-radius:999px;font-weight:600;font-size:14px;">
          Nova rezervacija →
       </a>
     </div>
-    <p style="margin:24px 0 0 0;color:#5a5248;">
-      <strong>Ekipa Ujete Bedarije</strong>
-    </p>
   `, subject);
   return { subject, html };
 }
 
 export async function mailRejectedToCustomer(reservation: Reservation) {
-  const { subject, html } = buildRejectedCustomerEmail(reservation);
+  const { subject, html } = await buildRejectedCustomerEmail(reservation);
   return send({
     to: reservation.customer_email,
     subject,

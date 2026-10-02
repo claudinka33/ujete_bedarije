@@ -5,6 +5,8 @@ import {
   buildNewReservationStaffEmail,
   buildApprovedCustomerEmail,
   buildRejectedCustomerEmail,
+  MAIL_TEMPLATE_KEYS,
+  type MailTemplateKey,
 } from '@/lib/mail';
 
 export const runtime = 'nodejs';
@@ -44,16 +46,29 @@ function dummyReservation(): Reservation {
   };
 }
 
-function buildTemplate(key: TemplateKey): { subject: string; html: string } {
+async function buildTemplate(
+  key: TemplateKey,
+  overrides?: Partial<Record<MailTemplateKey, string>>
+): Promise<{ subject: string; html: string }> {
   const reservation = dummyReservation();
   switch (key) {
     case 'new_reservation':
-      return buildNewReservationStaffEmail(reservation);
+      return buildNewReservationStaffEmail(reservation, overrides);
     case 'approved':
-      return buildApprovedCustomerEmail(reservation);
+      return buildApprovedCustomerEmail(reservation, overrides);
     case 'rejected':
-      return buildRejectedCustomerEmail(reservation);
+      return buildRejectedCustomerEmail(reservation, overrides);
   }
+}
+
+/** Extract any ?override_<key>=... query params the preview endpoint accepts. */
+function overridesFromQuery(url: URL): Partial<Record<MailTemplateKey, string>> {
+  const overrides: Partial<Record<MailTemplateKey, string>> = {};
+  for (const key of MAIL_TEMPLATE_KEYS) {
+    const v = url.searchParams.get(`override_${key}`);
+    if (v !== null) overrides[key] = v;
+  }
+  return overrides;
 }
 
 /** GET — renders the template HTML in the browser for visual preview. */
@@ -69,14 +84,17 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Invalid template', { status: 400 });
   }
 
-  const { html } = buildTemplate(key);
+  const { html } = await buildTemplate(key, overridesFromQuery(url));
   return new NextResponse(html, {
     status: 200,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
 }
 
-/** POST — actually sends the template to the specified `to` address. */
+/** POST — actually sends the template to the specified `to` address.
+ * Body: { template, to, overrides? }  — overrides let the admin preview
+ * uncommitted edits by sending them to a test inbox before saving.
+ */
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.email) {
@@ -84,7 +102,11 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const body = (await request.json()) as { template: TemplateKey; to: string };
+    const body = (await request.json()) as {
+      template: TemplateKey;
+      to: string;
+      overrides?: Partial<Record<MailTemplateKey, string>>;
+    };
     if (!body.template || !body.to) {
       return NextResponse.json({ error: 'Manjka template ali to' }, { status: 400 });
     }
@@ -96,7 +118,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { subject, html } = buildTemplate(body.template);
+    const { subject, html } = await buildTemplate(body.template, body.overrides);
 
     const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);

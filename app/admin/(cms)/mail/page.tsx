@@ -1,7 +1,7 @@
-import { Mail, Send, FileText, CheckCircle2, XCircle } from 'lucide-react';
+import { Mail, FileText, CheckCircle2, XCircle } from 'lucide-react';
 import { unstable_noStore as noStore } from 'next/cache';
-import MailTestForm from './MailTestForm';
-import TemplatePreview from './TemplatePreview';
+import { getMailTemplates } from '@/lib/mail';
+import TemplateEditor from './TemplateEditor';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -18,14 +18,16 @@ export default async function MailPage() {
       .split(',').map((e) => e.trim()).filter(Boolean),
   };
 
+  const templates = await getMailTemplates();
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3">
-          <Mail size={28} /> Email testiranje
+          <Mail size={28} /> Email obvestila
         </h1>
         <p className="text-ink-soft">
-          Preveri konfiguracijo, pošlji test mail, in si oglej predloge, ki jih bodo stranke prejele.
+          Uredi besedila mailov, ki jih sistem avtomatsko pošlje stranki in osebju.
         </p>
       </div>
 
@@ -39,45 +41,36 @@ export default async function MailPage() {
             ok={config.resendConfigured}
             hint={
               config.resendConfigured
-                ? 'Resend API ključ je dodan v Vercel env vars.'
-                : 'Dodaj RESEND_API_KEY v Vercel → Settings → Environment Variables, potem Redeploy.'
+                ? 'Resend povezava deluje.'
+                : 'Dodaj RESEND_API_KEY v Vercel env vars, potem Redeploy.'
             }
           />
-          <ConfigRow label="MAIL_FROM" value={config.mailFrom} ok={true}
-            hint="Pošiljateljev naslov (mora biti verificiran v Resendu)." />
-          <ConfigRow label="MAIL_REPLY_TO" value={config.mailReplyTo} ok={true}
-            hint="Kam se bodo odgovori strank preusmerili." />
+          <ConfigRow label="Pošiljatelj" value={config.mailFrom} ok={true}
+            hint="S katerega naslova se pošljejo maili." />
+          <ConfigRow label="Odgovori na" value={config.mailReplyTo} ok={true}
+            hint="Kam gredo odgovori strank." />
           <ConfigRow
-            label="STAFF_NOTIFY_EMAILS"
+            label="Osebje obvestil"
             value={config.staffEmails.join(', ')}
             ok={config.staffEmails.length > 0}
-            hint="Komu se pošlje notifikacija ob novi rezervaciji."
+            hint="Kdo prejme obvestilo o novi rezervaciji."
           />
         </div>
       </div>
 
-      {/* SEND TEST */}
+      {/* TEMPLATE EDITORS */}
       <div className="bg-surface border border-line rounded-lg p-5">
-        <h2 className="font-semibold text-lg mb-1 flex items-center gap-2">
-          <Send size={16} /> Pošlji testni mail
+        <h2 className="font-semibold text-lg flex items-center gap-2 mb-1">
+          <FileText size={16} /> Besedila mailov
         </h2>
         <p className="text-sm text-ink-soft mb-4">
-          Pošlje preprost testni mail — da potrdiš, da Resend + domena delata, preden odvisimo
-          rezervacije od tega.
+          Spremeni naslov in besedilo za vsakega od treh avtomatskih mailov.
+          Uporabi oznake kot <code className="bg-bg px-1 rounded border border-line text-xs">{'{{ime}}'}</code>,{' '}
+          <code className="bg-bg px-1 rounded border border-line text-xs">{'{{datum}}'}</code>, itd. —
+          sistem jih bo pri pošiljanju zamenjal s pravimi podatki stranke.
         </p>
-        <MailTestForm resendConfigured={config.resendConfigured} defaultTo={config.mailReplyTo} />
-      </div>
 
-      {/* TEMPLATES */}
-      <div className="bg-surface border border-line rounded-lg p-5">
-        <h2 className="font-semibold text-lg mb-1 flex items-center gap-2">
-          <FileText size={16} /> Predlogi mailov
-        </h2>
-        <p className="text-sm text-ink-soft mb-4">
-          Trije maili, ki jih sistem avtomatsko pošlje. Preveri izgled, in po želji pošlji prave
-          predloge na svoj email.
-        </p>
-        <TemplatePreview resendConfigured={config.resendConfigured} defaultTo={config.mailReplyTo} />
+        <TemplateEditor initialTemplates={templates} defaultTestEmail={config.mailReplyTo} resendConfigured={config.resendConfigured} />
       </div>
     </div>
   );
@@ -99,8 +92,8 @@ function ConfigRow({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-3 flex-wrap">
-          <code className="text-xs bg-bg px-2 py-0.5 rounded border border-line">{label}</code>
-          <span className={`text-sm ${ok ? 'text-ink' : 'text-red-700'}`}>{value}</span>
+          <span className="text-sm font-semibold text-ink">{label}</span>
+          <span className={`text-sm ${ok ? 'text-ink-soft' : 'text-red-700'}`}>{value}</span>
         </div>
         <p className="text-xs text-muted mt-1">{hint}</p>
       </div>
