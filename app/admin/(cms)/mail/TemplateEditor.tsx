@@ -8,7 +8,7 @@ import type { MailTemplateKey } from '@/lib/mail';
 
 type Templates = Record<MailTemplateKey, string>;
 
-type TabKey = 'new_reservation' | 'approved' | 'rejected';
+type TabKey = 'received' | 'new_reservation' | 'approved' | 'rejected';
 
 interface Props {
   initialTemplates: Templates;
@@ -22,7 +22,7 @@ const TABS: Array<{
   subtitle: string;
   recipient: string;
   color: string;
-  previewKey: 'new_reservation' | 'approved' | 'rejected';
+  previewKey: 'received' | 'new_reservation' | 'approved' | 'rejected';
   fields: Array<{
     key: MailTemplateKey;
     label: string;
@@ -31,9 +31,28 @@ const TABS: Array<{
   }>;
 }> = [
   {
+    key: 'received',
+    label: 'Potrditev povpraševanja',
+    subtitle: 'Prejme stranka takoj po oddaji povpraševanja (avtomatsko)',
+    recipient: 'Stranki',
+    color: 'bg-sky-50 text-sky-700 border-sky-200',
+    previewKey: 'received',
+    fields: [
+      { key: 'mail_received_subject', label: 'Naslov (subject)', rows: 1 },
+      { key: 'mail_received_body', label: 'Pozdravna uvod', rows: 3 },
+      {
+        key: 'mail_received_whatsnext',
+        label: '"Kaj sledi?" vrstice (vsaka vrstica = ena bulletpoint točka)',
+        rows: 4,
+        hint: 'Vsaka vrstica postane ena točka. Prazna vrstica = preskok.',
+      },
+      { key: 'mail_received_closing', label: 'Zaključek', rows: 2 },
+    ],
+  },
+  {
     key: 'new_reservation',
-    label: 'Novo povpraševanje',
-    subtitle: 'Prejmeta Anita + Stane, ko stranka odda rezervacijo',
+    label: 'Novo povpraševanje (interno)',
+    subtitle: 'Prejme osebje, ko stranka odda rezervacijo',
     recipient: 'Osebje',
     color: 'bg-blue-50 text-blue-700 border-blue-200',
     previewKey: 'new_reservation',
@@ -89,7 +108,7 @@ const VARS: Array<{ token: string; description: string }> = [
 ];
 
 export default function TemplateEditor({ initialTemplates, defaultTestEmail, resendConfigured }: Props) {
-  const [tab, setTab] = useState<TabKey>('new_reservation');
+  const [tab, setTab] = useState<TabKey>('received');
   const [templates, setTemplates] = useState<Templates>(initialTemplates);
   const [testEmail, setTestEmail] = useState(defaultTestEmail);
   const [pending, startTransition] = useTransition();

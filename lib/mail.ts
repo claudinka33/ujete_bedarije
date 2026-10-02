@@ -19,6 +19,10 @@ const STAFF_NOTIFY = (process.env.STAFF_NOTIFY_EMAILS ||
 
 /** Keys of mail-template settings rows the admin can edit. */
 export const MAIL_TEMPLATE_KEYS = [
+  'mail_received_subject',
+  'mail_received_body',
+  'mail_received_whatsnext',
+  'mail_received_closing',
   'mail_new_reservation_subject',
   'mail_new_reservation_body',
   'mail_approved_subject',
@@ -33,9 +37,18 @@ export type MailTemplateKey = (typeof MAIL_TEMPLATE_KEYS)[number];
 
 /** Hard-coded fallbacks, used when settings table has no value for a key. */
 const DEFAULTS: Record<MailTemplateKey, string> = {
+  mail_received_subject: 'Prejeli smo vaše povpraševanje ✓ · {{datum}}',
+  mail_received_body:
+    'Pozdravljeni {{ime}},\nhvala za vaše povpraševanje za photo booth. Spodaj je povzetek podatkov, ki ste jih poslali.',
+  mail_received_whatsnext:
+    'V 24 urah vam bomo poslali potrditev ali predlog alternativnega termina.\n' +
+    'Rezervacija NI dokončna, dokler ne prejmete potrditvenega maila.\n' +
+    'Za vprašanja smo na voljo na {{email_kontakt}} ali 030 654 002.',
+  mail_received_closing: 'Hvala za zaupanje!\nEkipa Ujete Bedarije',
+
   mail_new_reservation_subject: 'Nova rezervacija: {{polno_ime}} · {{datum}}',
   mail_new_reservation_body:
-    'Stranka je oddala rezervacijo preko spletne strani. Pregled podatkov spodaj — v CMS lahko potrdiš ali zavrneš.',
+    'Stranka je oddala rezervacijo preko spletne strani. Pregled podatkov spodaj — v CMS lahko potrdite ali zavrnete.',
   mail_approved_subject: 'Vaša rezervacija je potrjena ✓ · {{datum}}',
   mail_approved_body:
     'Pozdravljeni {{ime}},\nz veseljem potrjujemo vašo rezervacijo photo booth-a. Veselimo se dogodka!',
@@ -227,7 +240,51 @@ function detailsBlock(r: Partial<Reservation>): string {
 }
 
 // -------------------------------------------------------------------
-// 1) NEW RESERVATION → STAFF (Anita + Stane)
+// 0) RECEIVED → CUSTOMER (fired immediately on form submission)
+// -------------------------------------------------------------------
+export async function buildReceivedCustomerEmail(
+  reservation: Reservation,
+  overrides?: Partial<Record<MailTemplateKey, string>>
+): Promise<{ subject: string; html: string }> {
+  const t = await getMailTemplates();
+  const merged = { ...t, ...(overrides || {}) };
+  const vars = reservationVars(reservation);
+  const subject = substitute(merged.mail_received_subject, vars);
+  const bodyText = substitute(merged.mail_received_body, vars);
+  const whatsnextText = substitute(merged.mail_received_whatsnext, vars);
+  const closingText = substitute(merged.mail_received_closing, vars);
+
+  const whatsnextItems = whatsnextText.split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => `• ${textToHtml(l)}`)
+    .join('<br>');
+
+  const html = wrap(`
+    <div style="display:inline-block;padding:6px 14px;background:#e8f0f7;color:#1f4e7a;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Prejeto</div>
+    <h1 style="margin:12px 0 8px 0;font-size:22px;font-weight:700;">Prejeli smo vaše povpraševanje</h1>
+    <p style="margin:0;color:#5a5248;">${textToHtml(bodyText)}</p>
+    ${detailsBlock(reservation)}
+    <div style="margin-top:24px;padding:16px;background:#faf6f1;border-radius:8px;font-size:14px;color:#5a5248;">
+      <strong>Kaj sledi?</strong><br>
+      ${whatsnextItems}
+    </div>
+    <p style="margin:24px 0 0 0;color:#5a5248;">${textToHtml(closingText)}</p>
+  `, subject);
+  return { subject, html };
+}
+
+export async function mailReceivedToCustomer(reservation: Reservation) {
+  const { subject, html } = await buildReceivedCustomerEmail(reservation);
+  return send({
+    to: reservation.customer_email,
+    subject,
+    html,
+  });
+}
+
+// -------------------------------------------------------------------
+// 1) NEW RESERVATION → STAFF
 // -------------------------------------------------------------------
 export async function buildNewReservationStaffEmail(
   reservation: Reservation,
