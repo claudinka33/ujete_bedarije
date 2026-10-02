@@ -5,7 +5,7 @@ import { addHeroMedia, countHeroMedia } from '@/lib/queries';
 
 export const runtime = 'nodejs';
 
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 8;
 
 /**
  * Save a DB row for a blob that was already uploaded directly by the client.

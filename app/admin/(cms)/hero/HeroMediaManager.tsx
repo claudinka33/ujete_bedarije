@@ -13,7 +13,7 @@ interface Props {
   blobConfigured: boolean;
 }
 
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 8;
 
 export default function HeroMediaManager({ initial, blobConfigured }: Props) {
   const router = useRouter();
@@ -218,8 +218,8 @@ export default function HeroMediaManager({ initial, blobConfigured }: Props) {
 
       {items.length > 0 && (
         <p className="text-xs text-muted">
-          Mediji se vrtijo zaporedoma (vsak ~5 sekund). Videji se predvajajo brez zvoka,
-          samodejno, in se zacanjkajo (loop).
+          Mediji se v hero sekciji prikažejo kot kolaž (vsi hkrati). Videji se avtomatsko
+          predvajajo brez zvoka. Vrstni red (številke) določa postavitev — prvi je največji.
         </p>
       )}
     </div>

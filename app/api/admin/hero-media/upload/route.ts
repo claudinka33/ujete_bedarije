@@ -5,7 +5,7 @@ import { countHeroMedia } from '@/lib/queries';
 
 export const runtime = 'nodejs';
 
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 8;
 
 /**
  * Mints a signed upload token so the browser can upload directly to Vercel

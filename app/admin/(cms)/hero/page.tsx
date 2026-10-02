@@ -15,11 +15,12 @@ export default async function HeroMediaPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3">
-          <Film size={28} /> Hero carousel
+          <Film size={28} /> Hero kolaž
         </h1>
         <p className="text-ink-soft">
-          Slike in videji, ki se vrtijo na vrhu strani (desno od naslova). Največ 5 medijev.
-          Videji se predvajajo avtomatsko, brez zvoka.
+          Slike in videji v hero sekciji strani — vsi vidni hkrati kot kolaž.
+          Največ 8 medijev. Videji se predvajajo avtomatsko, brez zvoka. Klik na kartico
+          odpre polno velikost.
         </p>
       </div>
 

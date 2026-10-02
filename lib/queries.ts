@@ -851,7 +851,7 @@ export async function getPublicHeroMedia(): Promise<HeroMediaItem[]> {
     FROM hero_media
     WHERE published = true
     ORDER BY sort_order ASC, id ASC
-    LIMIT 5
+    LIMIT 8
   `;
   return rows as HeroMediaItem[];
 }
