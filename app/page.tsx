@@ -14,6 +14,7 @@ import BookingProvider from '@/components/booking/BookingProvider';
 import BookingButton from '@/components/booking/BookingButton';
 import FaqAccordion from '@/components/site/FaqAccordion';
 import GallerySection from '@/components/site/GallerySection';
+import ReviewButton from '@/components/reviews/ReviewButton';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -269,9 +270,8 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* MNENJA STRANK */}
-        {reviews.length > 0 && (
-          <section id="mnenja" className="py-24">
+        {/* MNENJA STRANK — vedno viden, da lahko stranka odda, tudi če mnenj še ni */}
+        <section id="mnenja" className="py-24">
             <div className="container-page">
               <div className="text-center mb-16">
                 <span className="eyebrow">Mnenja strank</span>
@@ -292,55 +292,67 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {reviews.map((rev) => (
-                  <article
-                    key={rev.id}
-                    className="bg-surface border border-line rounded-lg p-6"
-                  >
-                    <div className="flex items-center gap-1 mb-4">
-                      {[...Array(rev.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={12}
-                          className="fill-accent text-accent"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-sm text-ink-soft leading-relaxed mb-6">
-                      {rev.text}
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${
-                          rev.avatar_variant === 1
-                            ? 'bg-accent'
-                            : rev.avatar_variant === 2
-                            ? 'bg-rose'
-                            : rev.avatar_variant === 3
-                            ? 'bg-sage'
-                            : rev.avatar_variant === 4
-                            ? 'bg-purple-400'
-                            : 'bg-amber-400'
-                        }`}
-                      >
-                        {rev.reviewer_initial || rev.reviewer_name[0]}
+              {reviews.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {reviews.map((rev) => (
+                    <article
+                      key={rev.id}
+                      className="bg-surface border border-line rounded-lg p-6"
+                    >
+                      <div className="flex items-center gap-1 mb-4">
+                        {[...Array(rev.rating)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={12}
+                            className="fill-accent text-accent"
+                          />
+                        ))}
                       </div>
-                      <div>
-                        <div className="font-semibold text-sm">
-                          {rev.reviewer_name}
+                      <p className="text-sm text-ink-soft leading-relaxed mb-6">
+                        {rev.text}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${
+                            rev.avatar_variant === 1
+                              ? 'bg-accent'
+                              : rev.avatar_variant === 2
+                              ? 'bg-rose'
+                              : rev.avatar_variant === 3
+                              ? 'bg-sage'
+                              : rev.avatar_variant === 4
+                              ? 'bg-purple-400'
+                              : 'bg-amber-400'
+                          }`}
+                        >
+                          {rev.reviewer_initial || rev.reviewer_name[0]}
                         </div>
-                        <div className="text-xs text-muted">
-                          {rev.event_type} · {rev.location}
+                        <div>
+                          <div className="font-semibold text-sm">
+                            {rev.reviewer_name}
+                          </div>
+                          <div className="text-xs text-muted">
+                            {rev.event_type} · {rev.location}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-ink-soft">
+                  Še ni objavljenih mnenj — bodite prvi!
+                </p>
+              )}
+
+              <div className="mt-12 text-center">
+                <ReviewButton className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-ink bg-surface text-sm font-semibold hover:bg-ink hover:text-bg transition-colors" />
+                <p className="text-xs text-muted mt-3">
+                  Ste imeli dogodek z nami? Hvala, če si vzamete minuto za oddajo mnenja.
+                </p>
               </div>
             </div>
           </section>
-        )}
 
         {/* FAQ */}
         {faq.length > 0 && (

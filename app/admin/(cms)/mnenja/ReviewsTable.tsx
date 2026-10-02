@@ -2,13 +2,16 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Save, Plus, Trash2, Check, Star } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, Check, Clock, Mail } from 'lucide-react';
 import type { Review } from '@/lib/queries';
 
 interface EditableReview extends Partial<Review> {
   published: boolean;
   dirty?: boolean;
   isNew?: boolean;
+  reviewer_email?: string | null;
+  submission_source?: 'admin' | 'public';
+  created_at?: string;
 }
 
 interface Props {
@@ -133,8 +136,44 @@ export default function ReviewsTable({ initial }: Props) {
       <div className="space-y-3">
         {items.map((it, idx) => {
           const isSaved = it.id ? savedIds.has(it.id) : false;
+          const isPendingPublic = it.submission_source === 'public' && !it.published;
           return (
-            <div key={idx} className="bg-surface border border-line rounded-lg p-5 space-y-3">
+            <div
+              key={idx}
+              className={`border rounded-lg p-5 space-y-3 ${
+                isPendingPublic
+                  ? 'bg-amber-50 border-amber-300 ring-1 ring-amber-200'
+                  : 'bg-surface border-line'
+              }`}
+            >
+              {isPendingPublic && (
+                <div className="flex flex-wrap items-center gap-2 pb-3 border-b border-amber-200">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-200 text-amber-900 text-xs font-semibold uppercase tracking-wide">
+                    <Clock size={10} /> Čaka na pregled
+                  </span>
+                  {it.reviewer_email && (
+                    <a
+                      href={`mailto:${it.reviewer_email}`}
+                      className="inline-flex items-center gap-1 text-xs text-amber-800 hover:underline"
+                    >
+                      <Mail size={10} /> {it.reviewer_email}
+                    </a>
+                  )}
+                  {it.created_at && (
+                    <span className="text-xs text-amber-700">
+                      {new Date(it.created_at).toLocaleString('sl-SI', {
+                        day: 'numeric',
+                        month: 'long',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  )}
+                  <span className="ml-auto text-xs text-amber-700">
+                    Odkljukaj &laquo;Objavljen&raquo; in Shrani za objavo, ali Izbriši za zavrnitev.
+                  </span>
+                </div>
+              )}
               <div className="grid md:grid-cols-[1fr_120px_140px_100px] gap-3">
                 <input
                   type="text"

@@ -40,6 +40,20 @@ export interface Review {
   rating: number;
   text: string;
   sort_order: number;
+  published?: boolean;
+  reviewer_email?: string | null;
+  submission_source?: 'admin' | 'public';
+  created_at?: string;
+}
+
+/** Payload the PUBLIC review form submits. */
+export interface PublicReviewInput {
+  reviewer_name: string;
+  reviewer_email?: string;
+  event_type: string;
+  location: string;
+  rating: number;
+  text: string;
 }
 
 export interface FaqItem {
@@ -410,11 +424,50 @@ export interface ReviewInput {
 export async function getAllReviews(): Promise<Review[]> {
   const rows = await sql`
     SELECT id, reviewer_name, reviewer_initial, avatar_variant,
-           event_type, location, region, rating, text, sort_order, published
+           event_type, location, region, rating, text, sort_order, published,
+           reviewer_email,
+           COALESCE(submission_source, 'admin') AS submission_source,
+           created_at
     FROM reviews
-    ORDER BY sort_order ASC
+    ORDER BY
+      -- Pending public submissions first (newest), then by sort_order
+      CASE WHEN published = false AND submission_source = 'public' THEN 0 ELSE 1 END,
+      CASE WHEN published = false AND submission_source = 'public' THEN created_at ELSE NULL END DESC,
+      sort_order ASC
   ` as (Review & { published: boolean })[];
   return rows;
+}
+
+export async function countPendingPublicReviews(): Promise<number> {
+  const rows = await sql`
+    SELECT COUNT(*)::int AS c
+    FROM reviews
+    WHERE published = false AND submission_source = 'public'
+  `;
+  return (rows[0] as { c: number }).c;
+}
+
+/** Public form submission — forced published=false, submission_source='public'. */
+export async function createPublicReview(input: PublicReviewInput): Promise<Review> {
+  const initial = input.reviewer_name.trim().charAt(0).toUpperCase() || '?';
+  // Pick an avatar variant deterministically from the name
+  const avatar = ((input.reviewer_name.charCodeAt(0) || 65) % 5) + 1;
+
+  const rows = await sql`
+    INSERT INTO reviews (
+      reviewer_name, reviewer_initial, avatar_variant,
+      event_type, location, region,
+      rating, text, sort_order, published,
+      reviewer_email, submission_source
+    ) VALUES (
+      ${input.reviewer_name.trim()}, ${initial}, ${avatar},
+      ${input.event_type.trim()}, ${input.location.trim()}, ${null},
+      ${input.rating}, ${input.text.trim()}, ${999}, ${false},
+      ${input.reviewer_email?.trim().toLowerCase() || null}, ${'public'}
+    )
+    RETURNING *
+  `;
+  return rows[0] as Review;
 }
 
 export async function createReview(input: ReviewInput): Promise<Review> {
