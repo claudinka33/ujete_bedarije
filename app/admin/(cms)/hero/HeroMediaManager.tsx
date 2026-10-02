@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   Upload, Loader2, Trash2, Image as ImageIcon, Film, AlertCircle, Check,
 } from 'lucide-react';
+import { upload } from '@vercel/blob/client';
 import type { HeroMediaItem } from '@/lib/queries';
 
 interface Props {
@@ -23,6 +24,8 @@ export default function HeroMediaManager({ initial, blobConfigured }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [justUploaded, setJustUploaded] = useState<number | null>(null);
 
+  const [progress, setProgress] = useState<number | null>(null);
+
   const uploadFile = async (file: File) => {
     setError(null);
     if (items.length >= MAX_ITEMS) {
@@ -30,23 +33,41 @@ export default function HeroMediaManager({ initial, blobConfigured }: Props) {
       return;
     }
     setUploading(true);
+    setProgress(0);
+
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/admin/hero-media', {
-        method: 'POST',
-        body: fd,
+      // 1. Direct-to-Blob upload (bypasses Vercel's 4.5 MB serverless body limit)
+      const pathname = `hero/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, '_')}`;
+      const blob = await upload(pathname, file, {
+        access: 'public',
+        handleUploadUrl: '/api/admin/hero-media/upload',
+        onUploadProgress: (p) => {
+          setProgress(Math.round(p.percentage));
+        },
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Napaka pri nalaganju');
-      setItems((prev) => [...prev, data.item]);
-      setJustUploaded(data.item.id);
+
+      // 2. Save DB row with the resulting Blob URL
+      const saveRes = await fetch('/api/admin/hero-media/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: blob.url,
+          pathname: blob.pathname,
+          contentType: file.type,
+        }),
+      });
+      const saveData = await saveRes.json();
+      if (!saveRes.ok) throw new Error(saveData.error || 'Napaka pri shranjevanju');
+
+      setItems((prev) => [...prev, saveData.item]);
+      setJustUploaded(saveData.item.id);
       setTimeout(() => setJustUploaded(null), 2500);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Napaka');
+      setError(err instanceof Error ? err.message : 'Napaka pri nalaganju');
     } finally {
       setUploading(false);
+      setProgress(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -96,12 +117,21 @@ export default function HeroMediaManager({ initial, blobConfigured }: Props) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink text-bg text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {uploading ? (
-              <><Loader2 size={14} className="animate-spin" /> Nalagam...</>
+              <><Loader2 size={14} className="animate-spin" /> Nalagam{progress !== null ? ` ${progress}%` : '…'}</>
             ) : (
               <><Upload size={14} /> Dodaj</>
             )}
           </button>
         </div>
+
+        {uploading && progress !== null && (
+          <div className="mt-3 w-full h-1 bg-bg rounded-full overflow-hidden">
+            <div
+              className="h-full bg-ink transition-all duration-200"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
 
         {error && (
           <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-800 flex items-start gap-2">
