@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
-import { updateReservationStatus } from '@/lib/queries';
+import {
+  updateReservationStatus,
+  deleteReservation,
+  getReservation,
+} from '@/lib/queries';
 import { mailApprovedToCustomer, mailRejectedToCustomer } from '@/lib/mail';
 import { createEventForAllStaff, deleteEventsForReservation } from '@/lib/google-calendar';
 
 export const runtime = 'nodejs';
+
+function invalidateReservationPaths() {
+  revalidatePath('/admin/rezervacije', 'page');
+  revalidatePath('/admin', 'page');
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -80,9 +90,55 @@ export async function PATCH(
       console.error('Calendar sync failed:', gcalErr);
     }
 
+    invalidateReservationPaths();
     return NextResponse.json({ ok: true, reservation: updated });
   } catch (error) {
     console.error('PATCH reservation error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}
+
+/** DELETE — permanently remove a reservation.
+ * Side-effects: if a Google Calendar event was created for this reservation
+ * (status was confirmed), that event is deleted from staff calendars.
+ * No email is sent — the staff member deleting it is doing so intentionally.
+ */
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  const id = parseInt(params.id, 10);
+  if (isNaN(id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
+  try {
+    // Load first so we have the google_event_ids before the row disappears
+    const reservation = await getReservation(id);
+    if (!reservation) {
+      return NextResponse.json({ error: 'Rezervacija ni najdena' }, { status: 404 });
+    }
+
+    // Clean up Google Calendar events, best-effort
+    try {
+      if (reservation.google_event_ids && Object.keys(reservation.google_event_ids).length > 0) {
+        await deleteEventsForReservation(reservation);
+      }
+    } catch (gcalErr) {
+      console.error('[reservations] Calendar cleanup failed on delete:', gcalErr);
+    }
+
+    await deleteReservation(id);
+
+    invalidateReservationPaths();
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error('DELETE reservation error:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

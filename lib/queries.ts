@@ -256,6 +256,13 @@ export async function updateReservationStatus(
   return rows[0] as Reservation;
 }
 
+/** Permanently delete a reservation. Returns the deleted row so caller can
+ * clean up related side-effects (e.g. Google Calendar events). */
+export async function deleteReservation(id: number): Promise<Reservation | null> {
+  const rows = await sql`DELETE FROM reservations WHERE id = ${id} RETURNING *`;
+  return (rows[0] as Reservation) ?? null;
+}
+
 // =============================================================
 // ADMIN: PACKAGES CRUD
 // =============================================================
