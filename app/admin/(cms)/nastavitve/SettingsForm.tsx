@@ -18,6 +18,7 @@ interface Props {
 const GROUPS: Array<{ title: string; prefix: string; keys?: string[] }> = [
   { title: 'Podjetje & kontakt', prefix: '', keys: ['company_name', 'phone', 'phone_international', 'email', 'whatsapp_message'] },
   { title: 'Hero (glavna sekcija)', prefix: '', keys: ['hero_title', 'hero_subtitle', 'hero_cta_primary', 'hero_cta_secondary'] },
+  { title: 'Hero media (video / slika)', prefix: '', keys: ['hero_instagram_url', 'hero_image_url'] },
   { title: 'Bonus banner & cene', prefix: '', keys: ['bonus_banner', 'vat_note'] },
   { title: 'SEO', prefix: '', keys: ['seo_title', 'seo_description'] },
   { title: 'Poslovni podatki', prefix: '', keys: ['service_area', 'setup_time_min', 'setup_time_max', 'required_space', 'reservation_response_hours', 'reservation_deposit_percent'] },

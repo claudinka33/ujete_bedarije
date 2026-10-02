@@ -14,6 +14,7 @@ import BookingProvider from '@/components/booking/BookingProvider';
 import BookingButton from '@/components/booking/BookingButton';
 import FaqAccordion from '@/components/site/FaqAccordion';
 import GallerySection from '@/components/site/GallerySection';
+import HeroMedia from '@/components/site/HeroMedia';
 import ReviewButton from '@/components/reviews/ReviewButton';
 
 export const dynamic = 'force-dynamic';
@@ -78,46 +79,93 @@ export default async function HomePage() {
         </nav>
 
         {/* HERO */}
-        <section className="pt-20 pb-16 md:pt-32 md:pb-24 relative overflow-hidden">
-          <div
-            className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-40 pointer-events-none"
-            style={{
-              background:
-                'radial-gradient(circle, rgba(212, 165, 165, 0.4), transparent 70%)',
-            }}
-          />
-          <div
-            className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full opacity-30 pointer-events-none"
-            style={{
-              background:
-                'radial-gradient(circle, rgba(168, 181, 160, 0.4), transparent 70%)',
-            }}
-          />
+        {(() => {
+          const hasMedia = Boolean(
+            (settings.hero_instagram_url && settings.hero_instagram_url.trim()) ||
+            (settings.hero_image_url && settings.hero_image_url.trim())
+          );
+          return (
+            <section className="pt-20 pb-16 md:pt-32 md:pb-24 relative overflow-hidden">
+              <div
+                className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-40 pointer-events-none"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(212, 165, 165, 0.4), transparent 70%)',
+                }}
+              />
+              <div
+                className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full opacity-30 pointer-events-none"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(168, 181, 160, 0.4), transparent 70%)',
+                }}
+              />
 
-          <div className="container-page relative z-10 text-center">
-            <span className="eyebrow mb-6">Photo Booth Slovenija</span>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-none mt-6 mb-6">
-              {settings.hero_title || 'Ujemite trenutke na svoj način'}
-            </h1>
-            <p className="text-lg md:text-xl text-ink-soft max-w-2xl mx-auto mb-10">
-              {settings.hero_subtitle ||
-                'Photo booth za poroke, zabave in firmne dogodke po Sloveniji.'}
-            </p>
+              <div className="container-page relative z-10">
+                {hasMedia ? (
+                  // Collage layout: text left, media right (desktop); stacked on mobile
+                  <div className="grid lg:grid-cols-[1.1fr,1fr] gap-10 lg:gap-16 items-center">
+                    <div className="text-center lg:text-left">
+                      <span className="eyebrow mb-6">Photo Booth Slovenija</span>
+                      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight mt-6 mb-6">
+                        {settings.hero_title || 'Ujemite trenutke na svoj način'}
+                      </h1>
+                      <p className="text-lg md:text-xl text-ink-soft max-w-2xl mb-10">
+                        {settings.hero_subtitle ||
+                          'Photo booth za poroke, zabave in firmne dogodke po Sloveniji.'}
+                      </p>
 
-            <div className="flex flex-wrap gap-3 justify-center">
-              <BookingButton className="btn-primary">Rezerviraj termin</BookingButton>
-              <a href="#paketi" className="btn-ghost">
-                Poglej pakete
-              </a>
-            </div>
+                      <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                        <BookingButton className="btn-primary">Rezerviraj termin</BookingButton>
+                        <a href="#paketi" className="btn-ghost">
+                          Poglej pakete
+                        </a>
+                      </div>
 
-            {settings.bonus_banner && (
-              <div className="mt-12 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent/10 text-accent-dark text-sm font-medium">
-                🎁 {settings.bonus_banner}
+                      {settings.bonus_banner && (
+                        <div className="mt-10 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent/10 text-accent-dark text-sm font-medium">
+                          🎁 {settings.bonus_banner}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="order-first lg:order-last">
+                      <HeroMedia
+                        instagramUrl={settings.hero_instagram_url}
+                        imageUrl={settings.hero_image_url}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  // Centered layout — original, when no media is configured
+                  <div className="text-center">
+                    <span className="eyebrow mb-6">Photo Booth Slovenija</span>
+                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-none mt-6 mb-6">
+                      {settings.hero_title || 'Ujemite trenutke na svoj način'}
+                    </h1>
+                    <p className="text-lg md:text-xl text-ink-soft max-w-2xl mx-auto mb-10">
+                      {settings.hero_subtitle ||
+                        'Photo booth za poroke, zabave in firmne dogodke po Sloveniji.'}
+                    </p>
+
+                    <div className="flex flex-wrap gap-3 justify-center">
+                      <BookingButton className="btn-primary">Rezerviraj termin</BookingButton>
+                      <a href="#paketi" className="btn-ghost">
+                        Poglej pakete
+                      </a>
+                    </div>
+
+                    {settings.bonus_banner && (
+                      <div className="mt-12 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent/10 text-accent-dark text-sm font-medium">
+                        🎁 {settings.bonus_banner}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </section>
+            </section>
+          );
+        })()}
 
         {/* PAKETI */}
         <section id="paketi" className="py-24 bg-surface">
