@@ -134,7 +134,7 @@ export default async function HomePage() {
                       )}
                     </div>
 
-                    <div className="order-first lg:order-last">
+                    <div>
                       {hasCarousel ? (
                         <HeroCarousel items={heroMedia} />
                       ) : (
