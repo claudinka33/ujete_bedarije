@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
+import Analytics from '@/components/analytics/Analytics';
+import ClickTracker from '@/components/analytics/ClickTracker';
 
 const poppins = Poppins({
   subsets: ['latin', 'latin-ext'],
@@ -51,7 +53,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sl" className={poppins.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+        <ClickTracker />
+      </body>
     </html>
   );
 }

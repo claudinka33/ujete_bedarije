@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { X, Check, Loader2 } from 'lucide-react';
 import type { Package, Extra } from '@/lib/queries';
+import { trackReservationSubmit } from '@/lib/analytics';
 
 interface Props {
   isOpen: boolean;
@@ -134,6 +135,13 @@ export default function BookingModal({
 
       setSuccess(true);
       setForm(EMPTY_FORM);
+
+      // Analytics: fire Lead / generate_lead conversion event
+      trackReservationSubmit({
+        packageName: selectedPkg?.name || 'Ni izbrano',
+        packagePrice: selectedPkg?.price ?? null,
+        eventType: form.tipDogodka,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Napaka pri pošiljanju');
     } finally {

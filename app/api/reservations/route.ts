@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createReservation, upsertContact, type ReservationInput } from '@/lib/queries';
+import { mailNewReservationToStaff } from '@/lib/mail';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -90,6 +91,14 @@ export async function POST(request: NextRequest) {
 
     // Upsert contact (CRM light)
     await upsertContact(input.customer_email, input.customer_name, input.customer_phone);
+
+    // Fire-and-forget staff notification. Never fail the user's reservation
+    // if mail is down — the row is already in the DB and visible in CMS.
+    try {
+      await mailNewReservationToStaff(reservation);
+    } catch (mailErr) {
+      console.error('Mail send failed (new reservation):', mailErr);
+    }
 
     return NextResponse.json(
       {

@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import BookingModal from './BookingModal';
 import type { Package, Extra } from '@/lib/queries';
+import { trackBeginBooking, trackViewPackage } from '@/lib/analytics';
 
 interface BookingContextValue {
   openBooking: (packageSlug?: string) => void;
@@ -30,6 +31,11 @@ export default function BookingProvider({ children, packages, extras }: Props) {
   const openBooking = (slug?: string) => {
     setInitialPackageSlug(slug);
     setIsOpen(true);
+    const pkg = slug ? packages.find((p) => p.slug === slug) : undefined;
+    if (pkg) {
+      trackViewPackage({ name: pkg.name, price: pkg.price });
+    }
+    trackBeginBooking(pkg ? { name: pkg.name, price: pkg.price } : undefined);
   };
   const closeBooking = () => setIsOpen(false);
 

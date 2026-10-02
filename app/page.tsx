@@ -375,6 +375,7 @@ export default async function HomePage() {
               {/* Phone */}
               <a
                 href={`tel:${settings.phone_international || '+38630654002'}`}
+                data-track-event="contact_phone"
                 className="flex flex-col items-center gap-3 p-6 bg-surface border border-line rounded-lg hover:border-accent transition-colors"
               >
                 <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent-dark">
@@ -413,6 +414,7 @@ export default async function HomePage() {
               {/* Email */}
               <a
                 href={`mailto:${settings.email || 'ujete.bedarije@gmail.com'}`}
+                data-track-event="contact_email"
                 className="flex flex-col items-center gap-3 p-6 bg-surface border border-line rounded-lg hover:border-accent transition-colors"
               >
                 <div className="w-12 h-12 rounded-full bg-rose/20 flex items-center justify-center text-rose">

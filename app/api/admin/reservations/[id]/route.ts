@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { updateReservationStatus } from '@/lib/queries';
+import { mailApprovedToCustomer, mailRejectedToCustomer } from '@/lib/mail';
+import { createEventForAllStaff, deleteEventsForReservation } from '@/lib/google-calendar';
 
 export const runtime = 'nodejs';
 
@@ -53,13 +55,30 @@ export async function PATCH(
       internal_notes
     );
 
-    // TODO: Ko dodamo Google Calendar sync, tukaj:
-    //   if (status === 'confirmed') {
-    //     await createCalendarEventForAllStaff(updated);
-    //   }
-    // TODO: Ko dodamo Resend, pošlji email stranki:
-    //   if (status === 'confirmed') await sendConfirmationEmail(updated);
-    //   if (status === 'rejected') await sendRejectionEmail(updated);
+    // Fire-and-forget notifications. Never fail the API if mail is down —
+    // the status change has already been committed to the DB above.
+    try {
+      if (status === 'confirmed') {
+        await mailApprovedToCustomer(updated);
+      } else if (status === 'rejected') {
+        await mailRejectedToCustomer(updated);
+      }
+    } catch (mailErr) {
+      console.error('Mail send failed (status change):', mailErr);
+    }
+
+    // Google Calendar sync. Same contract: never fail the API if calendar
+    // writes fail — the status change is already persisted.
+    try {
+      if (status === 'confirmed') {
+        const results = await createEventForAllStaff(updated);
+        console.log('[gcal] Event creation results for reservation', id, results);
+      } else if (status === 'cancelled' || status === 'rejected') {
+        await deleteEventsForReservation(updated);
+      }
+    } catch (gcalErr) {
+      console.error('Calendar sync failed:', gcalErr);
+    }
 
     return NextResponse.json({ ok: true, reservation: updated });
   } catch (error) {

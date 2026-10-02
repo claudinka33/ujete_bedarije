@@ -21,11 +21,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
       authorization: {
         params: {
-          // Za zdaj samo osnovni scope. Ko dodamo Calendar sync:
-          //   scope: 'openid email profile https://www.googleapis.com/auth/calendar.events',
-          //   access_type: 'offline',   // za refresh_token
-          //   prompt: 'consent',        // vedno vprašaj za dovoljenje (dobimo refresh_token)
-          scope: 'openid email profile',
+          // Calendar.events scope so we can create events on the staff
+          // member's primary calendar after they log in.
+          scope:
+            'openid email profile https://www.googleapis.com/auth/calendar.events',
+          access_type: 'offline', // we need a refresh_token
+          prompt: 'consent',      // force consent screen so Google issues a refresh_token
         },
       },
     }),
@@ -59,10 +60,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (rows[0]) {
             token.userId = rows[0].id;
             token.role = rows[0].role;
-            // Update last_login_at
-            await sql`
-              UPDATE users SET last_login_at = NOW() WHERE id = ${rows[0].id}
-            `;
+
+            // Persist Google tokens on login so background jobs (calendar
+            // event creation on reservation approval) can act as this user.
+            // Only overwrite refresh_token when Google actually returns one;
+            // Google only hands it over on the first consent (prompt=consent
+            // + access_type=offline mitigate that).
+            if (account.provider === 'google') {
+              const accessToken = account.access_token ?? null;
+              const refreshToken = account.refresh_token ?? null;
+              const expiresAt = account.expires_at
+                ? new Date(account.expires_at * 1000)
+                : null;
+
+              try {
+                if (refreshToken) {
+                  await sql`
+                    UPDATE users SET
+                      google_access_token = ${accessToken},
+                      google_refresh_token = ${refreshToken},
+                      google_token_expires_at = ${expiresAt},
+                      last_login_at = NOW()
+                    WHERE id = ${rows[0].id}
+                  `;
+                } else {
+                  // Access-only refresh (no refresh token re-issued)
+                  await sql`
+                    UPDATE users SET
+                      google_access_token = ${accessToken},
+                      google_token_expires_at = ${expiresAt},
+                      last_login_at = NOW()
+                    WHERE id = ${rows[0].id}
+                  `;
+                }
+              } catch (tokenErr) {
+                console.error('[auth] Failed to persist google tokens:', tokenErr);
+                // Fall back to just last_login_at update
+                await sql`UPDATE users SET last_login_at = NOW() WHERE id = ${rows[0].id}`;
+              }
+            } else {
+              await sql`UPDATE users SET last_login_at = NOW() WHERE id = ${rows[0].id}`;
+            }
           }
         } catch (err) {
           console.error('[auth] DB lookup failed:', err);
