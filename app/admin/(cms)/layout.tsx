@@ -1,9 +1,11 @@
-import { auth } from '@/auth';
+import { auth, signOut } from '@/auth';
 import Link from 'next/link';
-import { LogOut, LayoutDashboard, Calendar, Package, Sliders, Images, MessageSquare, HelpCircle, Settings, Mail, Film } from 'lucide-react';
+import {
+  LogOut, LayoutDashboard, Calendar, Package, Sliders, Images,
+  MessageSquare, HelpCircle, Settings, Mail, Film,
+} from 'lucide-react';
 import { redirect } from 'next/navigation';
-import MobileNav from './MobileNav';
-import { signOutAction } from './actions';
+import MobileNavDrawer from './MobileNavDrawer';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,11 @@ const NAV = [
   { href: '/admin/nastavitve', label: 'Nastavitve', icon: Settings },
 ];
 
+async function handleSignOut() {
+  'use server';
+  await signOut({ redirectTo: '/' });
+}
+
 export default async function AdminLayout({
   children,
 }: {
@@ -33,89 +40,79 @@ export default async function AdminLayout({
   const user = session.user;
   const initial = (user.name || user.email || '?')[0].toUpperCase();
 
+  const navItems = NAV.map(({ href, label, icon: Icon }) => ({ href, label, Icon }));
+
   return (
-    <div className="min-h-screen bg-bg">
-      {/* MOBILE: top bar + hamburger drawer */}
-      <MobileNav
-        nav={NAV}
-        user={{
-          name: user.name,
-          email: user.email,
-          role: (user as { role?: string }).role,
-        }}
+    <div className="min-h-screen bg-bg flex flex-col md:flex-row">
+      {/* MOBILE: just the drawer toggle (client); drawer markup lives inside */}
+      <MobileNavDrawer
+        navItems={NAV.map((n) => ({ href: n.href, label: n.label }))}
+        userLabel={user.name || user.email || ''}
+        role={(user as { role?: string }).role || 'staff'}
         initial={initial}
       />
 
-      <div className="flex flex-col md:flex-row">
-        {/* DESKTOP sidebar — hidden on mobile */}
-        <aside className="hidden md:flex md:w-64 md:min-h-screen bg-surface md:border-r border-line flex-col sticky top-0 md:self-start md:h-screen">
-          <div className="p-6 flex-shrink-0">
-            <Link href="/admin" className="flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo-sm.png"
-                alt="Ujete Bedarije"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain"
-              />
-              <div>
-                <div className="font-bold text-sm">Ujete Bedarije</div>
-                <div className="text-xs text-muted">CMS</div>
-              </div>
+      {/* DESKTOP SIDEBAR */}
+      <aside className="hidden md:flex md:w-64 md:min-h-screen bg-surface md:border-r border-line flex-col">
+        <div className="p-6">
+          <Link href="/admin" className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-sm.png"
+              alt="Ujete Bedarije"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain"
+            />
+            <div>
+              <div className="font-bold text-sm">Ujete Bedarije</div>
+              <div className="text-xs text-muted">CMS</div>
+            </div>
+          </Link>
+        </div>
+
+        <nav className="px-3 flex-1 overflow-y-auto pb-6 space-y-1">
+          {navItems.map(({ href, label, Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-ink-soft hover:bg-bg hover:text-ink transition-colors"
+            >
+              <Icon size={16} />
+              {label}
             </Link>
-          </div>
+          ))}
+        </nav>
 
-          <nav className="flex-1 overflow-y-auto px-3 pb-6 space-y-1">
-            {NAV.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-ink-soft hover:bg-bg hover:text-ink transition-colors"
-                >
-                  <Icon size={16} />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* User + logout — pinned to bottom of sticky sidebar */}
-          <div className="flex-shrink-0 border-t border-line p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-full bg-accent text-ink flex items-center justify-center font-semibold text-sm flex-shrink-0">
-                {initial}
+        <div className="border-t border-line p-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full bg-accent text-ink flex items-center justify-center font-semibold text-sm flex-shrink-0">
+              {initial}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold truncate">
+                {user.name || user.email}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold truncate">
-                  {user.name || user.email}
-                </div>
-                <div className="text-xs text-muted truncate">
-                  {(user as { role?: string }).role || 'staff'}
-                </div>
+              <div className="text-xs text-muted truncate">
+                {(user as { role?: string }).role || 'staff'}
               </div>
             </div>
-            <form action={signOutAction}>
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs text-ink-soft border border-line hover:border-accent transition-colors"
-              >
-                <LogOut size={14} />
-                Odjava
-              </button>
-            </form>
-            {/* signOutAction is imported from ./actions — same server action
-                used by MobileNav */}
           </div>
-        </aside>
+          <form action={handleSignOut}>
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs text-ink-soft border border-line hover:border-accent transition-colors"
+            >
+              <LogOut size={14} />
+              Odjava
+            </button>
+          </form>
+        </div>
+      </aside>
 
-        {/* MAIN CONTENT */}
-        <main className="flex-1 min-w-0">
-          <div className="p-4 md:p-10 max-w-6xl mx-auto">{children}</div>
-        </main>
-      </div>
+      <main className="flex-1 min-w-0">
+        <div className="p-4 md:p-10 max-w-6xl mx-auto">{children}</div>
+      </main>
     </div>
   );
 }
