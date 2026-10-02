@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, LogOut, type LucideIcon } from 'lucide-react';
+import { signOutAction } from './actions';
 
 interface NavItem {
   href: string;
@@ -15,10 +16,9 @@ interface Props {
   nav: NavItem[];
   user: { name?: string | null; email?: string | null; role?: string };
   initial: string;
-  signOutAction: () => Promise<void>;
 }
 
-export default function MobileNav({ nav, user, initial, signOutAction }: Props) {
+export default function MobileNav({ nav, user, initial }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 

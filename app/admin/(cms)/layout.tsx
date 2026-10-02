@@ -1,8 +1,9 @@
-import { auth, signOut } from '@/auth';
+import { auth } from '@/auth';
 import Link from 'next/link';
 import { LogOut, LayoutDashboard, Calendar, Package, Sliders, Images, MessageSquare, HelpCircle, Settings, Mail, Film } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import MobileNav from './MobileNav';
+import { signOutAction } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,11 +33,6 @@ export default async function AdminLayout({
   const user = session.user;
   const initial = (user.name || user.email || '?')[0].toUpperCase();
 
-  const signOutAction = async () => {
-    'use server';
-    await signOut({ redirectTo: '/' });
-  };
-
   return (
     <div className="min-h-screen bg-bg">
       {/* MOBILE: top bar + hamburger drawer */}
@@ -48,7 +44,6 @@ export default async function AdminLayout({
           role: (user as { role?: string }).role,
         }}
         initial={initial}
-        signOutAction={signOutAction}
       />
 
       <div className="flex flex-col md:flex-row">
@@ -111,6 +106,8 @@ export default async function AdminLayout({
                 Odjava
               </button>
             </form>
+            {/* signOutAction is imported from ./actions — same server action
+                used by MobileNav */}
           </div>
         </aside>
 
