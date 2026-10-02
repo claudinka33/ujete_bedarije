@@ -7,6 +7,7 @@ import {
   getPublicGalleries,
   type GalleryWithPhotos,
   getPublicGalleryBySlug,
+  getPublicHeroMedia,
 } from '@/lib/queries';
 import { Check, Phone, Mail, Star } from 'lucide-react';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -15,6 +16,7 @@ import BookingButton from '@/components/booking/BookingButton';
 import FaqAccordion from '@/components/site/FaqAccordion';
 import GallerySection from '@/components/site/GallerySection';
 import HeroMedia from '@/components/site/HeroMedia';
+import HeroCarousel from '@/components/site/HeroCarousel';
 import ReviewButton from '@/components/reviews/ReviewButton';
 
 export const dynamic = 'force-dynamic';
@@ -23,13 +25,14 @@ export const fetchCache = 'force-no-store';
 
 export default async function HomePage() {
   noStore();
-  const [packages, extras, reviews, faq, settings, galleries] = await Promise.all([
+  const [packages, extras, reviews, faq, settings, galleries, heroMedia] = await Promise.all([
     getPackages(),
     getExtras(),
     getReviews(),
     getFaqItems(),
     getSettings(),
     getPublicGalleries(),
+    getPublicHeroMedia(),
   ]);
 
   // Attach photos to each gallery for the section
@@ -80,10 +83,12 @@ export default async function HomePage() {
 
         {/* HERO */}
         {(() => {
-          const hasMedia = Boolean(
+          const hasCarousel = heroMedia.length > 0;
+          const hasLegacyMedia = Boolean(
             (settings.hero_instagram_url && settings.hero_instagram_url.trim()) ||
             (settings.hero_image_url && settings.hero_image_url.trim())
           );
+          const hasMedia = hasCarousel || hasLegacyMedia;
           return (
             <section className="pt-20 pb-16 md:pt-32 md:pb-24 relative overflow-hidden">
               <div
@@ -130,10 +135,14 @@ export default async function HomePage() {
                     </div>
 
                     <div className="order-first lg:order-last">
-                      <HeroMedia
-                        instagramUrl={settings.hero_instagram_url}
-                        imageUrl={settings.hero_image_url}
-                      />
+                      {hasCarousel ? (
+                        <HeroCarousel items={heroMedia} />
+                      ) : (
+                        <HeroMedia
+                          instagramUrl={settings.hero_instagram_url}
+                          imageUrl={settings.hero_image_url}
+                        />
+                      )}
                     </div>
                   </div>
                 ) : (

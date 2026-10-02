@@ -828,3 +828,87 @@ export async function reorderGalleryPhotos(orderedIds: number[]): Promise<void> 
     await sql`UPDATE gallery_photos SET sort_order = ${i + 1} WHERE id = ${orderedIds[i]}`;
   }
 }
+
+// =============================================================
+// HERO CAROUSEL
+// =============================================================
+
+export interface HeroMediaItem {
+  id: number;
+  media_type: 'image' | 'video';
+  media_url: string;
+  blob_pathname: string | null;
+  caption: string | null;
+  sort_order: number;
+  published: boolean;
+  created_at: string;
+}
+
+export async function getPublicHeroMedia(): Promise<HeroMediaItem[]> {
+  const rows = await sql`
+    SELECT id, media_type, media_url, blob_pathname, caption,
+           sort_order, published, created_at
+    FROM hero_media
+    WHERE published = true
+    ORDER BY sort_order ASC, id ASC
+    LIMIT 5
+  `;
+  return rows as HeroMediaItem[];
+}
+
+export async function getAllHeroMedia(): Promise<HeroMediaItem[]> {
+  const rows = await sql`
+    SELECT id, media_type, media_url, blob_pathname, caption,
+           sort_order, published, created_at
+    FROM hero_media
+    ORDER BY sort_order ASC, id ASC
+  `;
+  return rows as HeroMediaItem[];
+}
+
+export async function countHeroMedia(): Promise<number> {
+  const rows = await sql`SELECT COUNT(*)::int AS c FROM hero_media`;
+  return (rows[0] as { c: number }).c;
+}
+
+export async function addHeroMedia(input: {
+  media_type: 'image' | 'video';
+  media_url: string;
+  blob_pathname?: string | null;
+  caption?: string | null;
+}): Promise<HeroMediaItem> {
+  const maxRow = await sql`SELECT COALESCE(MAX(sort_order), 0) AS m FROM hero_media`;
+  const nextOrder = ((maxRow[0] as { m: number }).m ?? 0) + 1;
+  const rows = await sql`
+    INSERT INTO hero_media (media_type, media_url, blob_pathname, caption, sort_order, published)
+    VALUES (
+      ${input.media_type}, ${input.media_url},
+      ${input.blob_pathname ?? null}, ${input.caption ?? null},
+      ${nextOrder}, ${true}
+    )
+    RETURNING *
+  `;
+  return rows[0] as HeroMediaItem;
+}
+
+export async function getHeroMediaById(id: number): Promise<HeroMediaItem | null> {
+  const rows = await sql`
+    SELECT id, media_type, media_url, blob_pathname, caption,
+           sort_order, published, created_at
+    FROM hero_media WHERE id = ${id} LIMIT 1
+  `;
+  return (rows[0] as HeroMediaItem) ?? null;
+}
+
+export async function deleteHeroMedia(id: number): Promise<HeroMediaItem | null> {
+  const existing = await getHeroMediaById(id);
+  if (!existing) return null;
+  await sql`DELETE FROM hero_media WHERE id = ${id}`;
+  return existing;
+}
+
+export async function setHeroMediaOrder(orderedIds: number[]): Promise<void> {
+  for (let i = 0; i < orderedIds.length; i++) {
+    await sql`UPDATE hero_media SET sort_order = ${i + 1} WHERE id = ${orderedIds[i]}`;
+  }
+}

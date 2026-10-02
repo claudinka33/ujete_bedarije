@@ -1,6 +1,6 @@
 import { auth, signOut } from '@/auth';
 import Link from 'next/link';
-import { LogOut, LayoutDashboard, Calendar, Package, Sliders, Images, MessageSquare, HelpCircle, Settings, Mail } from 'lucide-react';
+import { LogOut, LayoutDashboard, Calendar, Package, Sliders, Images, MessageSquare, HelpCircle, Settings, Mail, Film } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -10,6 +10,7 @@ const NAV = [
   { href: '/admin/rezervacije', label: 'Rezervacije', icon: Calendar },
   { href: '/admin/paketi', label: 'Paketi', icon: Package },
   { href: '/admin/extras', label: 'Dodatne možnosti', icon: Sliders },
+  { href: '/admin/hero', label: 'Hero carousel', icon: Film },
   { href: '/admin/galerija', label: 'Galerija', icon: Images },
   { href: '/admin/mnenja', label: 'Mnenja', icon: MessageSquare },
   { href: '/admin/faq', label: 'FAQ', icon: HelpCircle },
