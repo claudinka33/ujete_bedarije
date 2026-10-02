@@ -141,7 +141,9 @@ function detailsBlock(r: Partial<Reservation>): string {
 // -------------------------------------------------------------------
 // 1) NEW RESERVATION → STAFF (Anita + Stane)
 // -------------------------------------------------------------------
-export async function mailNewReservationToStaff(reservation: Reservation) {
+export function buildNewReservationStaffEmail(reservation: Reservation): {
+  subject: string; html: string;
+} {
   const subject = `Nova rezervacija: ${reservation.customer_name} · ${fmtDate(reservation.event_date)}`;
   const html = wrap(`
     <h1 style="margin:0 0 8px 0;font-size:22px;font-weight:700;">Nova rezervacija</h1>
@@ -154,7 +156,11 @@ export async function mailNewReservationToStaff(reservation: Reservation) {
       </a>
     </div>
   `, subject);
+  return { subject, html };
+}
 
+export async function mailNewReservationToStaff(reservation: Reservation) {
+  const { subject, html } = buildNewReservationStaffEmail(reservation);
   return send({
     to: STAFF_NOTIFY,
     subject,
@@ -166,7 +172,9 @@ export async function mailNewReservationToStaff(reservation: Reservation) {
 // -------------------------------------------------------------------
 // 2) APPROVED → CUSTOMER
 // -------------------------------------------------------------------
-export async function mailApprovedToCustomer(reservation: Reservation) {
+export function buildApprovedCustomerEmail(reservation: Reservation): {
+  subject: string; html: string;
+} {
   const subject = `Vaša rezervacija je potrjena ✓ · ${fmtDate(reservation.event_date)}`;
   const html = wrap(`
     <div style="display:inline-block;padding:6px 14px;background:#e9f5ec;color:#1b5a2a;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Potrjeno</div>
@@ -187,7 +195,11 @@ export async function mailApprovedToCustomer(reservation: Reservation) {
       <strong>Ekipa Ujete Bedarije</strong>
     </p>
   `, subject);
+  return { subject, html };
+}
 
+export async function mailApprovedToCustomer(reservation: Reservation) {
+  const { subject, html } = buildApprovedCustomerEmail(reservation);
   return send({
     to: reservation.customer_email,
     subject,
@@ -198,7 +210,9 @@ export async function mailApprovedToCustomer(reservation: Reservation) {
 // -------------------------------------------------------------------
 // 3) REJECTED → CUSTOMER
 // -------------------------------------------------------------------
-export async function mailRejectedToCustomer(reservation: Reservation) {
+export function buildRejectedCustomerEmail(reservation: Reservation): {
+  subject: string; html: string;
+} {
   const subject = `Rezervacija ni mogoča · ${fmtDate(reservation.event_date)}`;
   const reasonBlock = reservation.rejection_reason
     ? `<div style="margin:16px 0;padding:14px;background:#faf6f1;border-left:3px solid #d4a5a5;border-radius:4px;color:#5a5248;font-style:italic;">${reservation.rejection_reason}</div>`
@@ -224,7 +238,11 @@ export async function mailRejectedToCustomer(reservation: Reservation) {
       <strong>Ekipa Ujete Bedarije</strong>
     </p>
   `, subject);
+  return { subject, html };
+}
 
+export async function mailRejectedToCustomer(reservation: Reservation) {
+  const { subject, html } = buildRejectedCustomerEmail(reservation);
   return send({
     to: reservation.customer_email,
     subject,
