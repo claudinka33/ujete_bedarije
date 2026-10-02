@@ -72,26 +72,30 @@ export default function ReservationActions({ reservationId, status }: Props) {
     });
   };
 
-  const handleDelete = () => {
+  const [deleting, setDeleting] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+
+  const handleDelete = async () => {
     if (!confirm('⚠ Trajno izbrišeš rezervacijo? Ta akcija se ne da razveljaviti. Zapisi gredo iz baze, Google Calendar event pa se izbriše iz koledarja.')) {
       return;
     }
-    startTransition(async () => {
-      try {
-        setError(null);
-        const res = await fetch(`/api/admin/reservations/${reservationId}`, {
-          method: 'DELETE',
-        });
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || 'Napaka pri brisanju');
-        }
-        router.push('/admin/rezervacije');
-        router.refresh();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Napaka');
+    setError(null);
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/reservations/${reservationId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || `HTTP ${res.status}: Napaka pri brisanju`);
       }
-    });
+      setDeleteSuccess(true);
+      // Hard navigation — bypass client router cache for list
+      window.location.href = '/admin/rezervacije';
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Napaka');
+      setDeleting(false);
+    }
   };
 
   return (
@@ -210,11 +214,16 @@ export default function ReservationActions({ reservationId, status }: Props) {
           <button
             type="button"
             onClick={handleDelete}
-            disabled={pending}
+            disabled={pending || deleting || deleteSuccess}
             className="inline-flex items-center gap-2 px-4 py-2 rounded text-sm text-red-700 hover:bg-red-50 border border-red-200 disabled:opacity-50"
           >
-            <Trash2 size={14} />
-            Trajno izbriši rezervacijo
+            {deleting ? (
+              <><Loader2 size={14} className="animate-spin" /> Brišem...</>
+            ) : deleteSuccess ? (
+              <><Check size={14} /> Izbrisano, preusmerjam...</>
+            ) : (
+              <><Trash2 size={14} /> Trajno izbriši rezervacijo</>
+            )}
           </button>
           <p className="text-xs text-muted mt-2">
             Izbriše iz baze in iz Google Calendarja (če je bil dogodek že ustvarjen). Ta akcija je nepovratna.

@@ -1,21 +1,27 @@
-import { getReservation } from '@/lib/queries';
+import { getReservation, getReservationDisplayNumber } from '@/lib/queries';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, User, Calendar, Package, Sparkles, MessageCircle, type LucideIcon } from 'lucide-react';
+import { unstable_noStore as noStore } from 'next/cache';
 import StatusPill from '@/components/admin/StatusPill';
 import ReservationActions from './ReservationActions';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ReservationDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
+  noStore();
   const id = parseInt(params.id, 10);
   if (isNaN(id)) notFound();
 
-  const r = await getReservation(id);
+  const [r, displayNumber] = await Promise.all([
+    getReservation(id),
+    getReservationDisplayNumber(id),
+  ]);
   if (!r) notFound();
 
   return (
@@ -34,7 +40,7 @@ export default async function ReservationDetailPage({
           <StatusPill status={r.status} />
         </div>
         <p className="text-ink-soft">
-          Rezervacija #{r.id} · Poslano{' '}
+          Rezervacija {displayNumber ? `št. ${displayNumber}` : ''} · Poslano{' '}
           {new Date(r.created_at).toLocaleString('sl-SI', {
             day: '2-digit',
             month: '2-digit',

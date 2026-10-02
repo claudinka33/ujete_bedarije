@@ -277,6 +277,45 @@ export async function deleteReservation(id: number): Promise<Reservation | null>
   return (rows[0] as Reservation) ?? null;
 }
 
+/** Gap-free sequential number of this reservation among all current rows,
+ * ordered by created_at ASC. If row #42 is deleted, #43 becomes "2", etc.
+ * Used ONLY for display — DB id stays immutable for URLs and audit trails. */
+export async function getReservationDisplayNumber(id: number): Promise<number | null> {
+  const rows = await sql`
+    SELECT display_number FROM (
+      SELECT id, ROW_NUMBER() OVER (ORDER BY created_at ASC, id ASC) AS display_number
+      FROM reservations
+    ) t
+    WHERE id = ${id}
+  `;
+  if (rows.length === 0) return null;
+  return Number((rows[0] as { display_number: number | string }).display_number);
+}
+
+/** List reservations WITH their computed display_number column.
+ * Admin list uses this so numbers show as 1, 2, 3… without gaps. */
+export async function getReservationsWithDisplayNumber(
+  status?: string
+): Promise<Array<Reservation & { display_number: number }>> {
+  const rows = status
+    ? await sql`
+        SELECT * FROM (
+          SELECT r.*, ROW_NUMBER() OVER (ORDER BY r.created_at ASC, r.id ASC) AS display_number
+          FROM reservations r
+        ) t
+        WHERE t.status = ${status}
+        ORDER BY t.created_at DESC
+      `
+    : await sql`
+        SELECT * FROM (
+          SELECT r.*, ROW_NUMBER() OVER (ORDER BY r.created_at ASC, r.id ASC) AS display_number
+          FROM reservations r
+        ) t
+        ORDER BY t.created_at DESC
+      `;
+  return (rows as unknown) as Array<Reservation & { display_number: number }>;
+}
+
 // =============================================================
 // ADMIN: PACKAGES CRUD
 // =============================================================

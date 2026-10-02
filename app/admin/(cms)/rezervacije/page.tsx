@@ -1,9 +1,11 @@
-import { getReservations } from '@/lib/queries';
+import { getReservationsWithDisplayNumber } from '@/lib/queries';
 import Link from 'next/link';
 import StatusPill from '@/components/admin/StatusPill';
 import { Calendar, ArrowUpRight } from 'lucide-react';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const STATUS_TABS = [
   { key: 'all', label: 'Vse' },
@@ -18,8 +20,9 @@ export default async function ReservationsPage({
 }: {
   searchParams: { status?: string };
 }) {
+  noStore();
   const status = searchParams.status && searchParams.status !== 'all' ? searchParams.status : undefined;
-  const reservations = await getReservations(status);
+  const reservations = await getReservationsWithDisplayNumber(status);
 
   return (
     <div>
@@ -70,6 +73,9 @@ export default async function ReservationsPage({
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-bg border border-line text-sm font-semibold text-ink-soft">
+                      {Number(r.display_number)}
+                    </span>
                     <span className="font-semibold text-lg">{r.customer_name}</span>
                     <StatusPill status={r.status} />
                   </div>
