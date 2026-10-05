@@ -1,7 +1,7 @@
 import { getReservationsWithDisplayNumber } from '@/lib/queries';
 import Link from 'next/link';
 import StatusPill from '@/components/admin/StatusPill';
-import { Calendar, ArrowUpRight } from 'lucide-react';
+import { Calendar, ArrowUpRight, Plus } from 'lucide-react';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
@@ -33,6 +33,14 @@ export default async function ReservationsPage({
             Vsa povpraševanja strank — pregled, potrditev, zavrnitev.
           </p>
         </div>
+        <Link
+          href="/admin/rezervacije/nova"
+          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-bg text-sm font-semibold hover:opacity-90 transition-opacity"
+        >
+          <Plus size={16} />
+          <span className="hidden sm:inline">Nova rezervacija</span>
+          <span className="sm:hidden">Nova</span>
+        </Link>
       </div>
 
       {/* Status tabs */}
